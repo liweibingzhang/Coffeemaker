@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<title>Adding Ingredient</title>
+<link rel="stylesheet" href="css/bootstrap.css" />
+<link rel="stylesheet" href="css/app.css" />
+<body>
+	<div layout:fragment="content">
+		<script	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+		<script>
+			/* Without these comments, Thymeleaf will try to parse the Javascript as XML and break itself sometimes */
+			/*<![CDATA[*/ 
+			var app = angular.module('myApp', []);
+			app.controller('addIngredient', function($scope, $http, $q) {
+				
+			// Populate initial list
+			$http.get("/api/v1/inventory").then(function(response) {
+				console.log("init");
+	            console.log(response);
+	            
+	            // Update frontend ingredients
+	            $scope.currIngredients = response.data.ingredients;
+			}).catch(function(response) {
+				console.log("Inventory does not exist");
+	            console.log(response);
+	        });
+			
+				
+	        // Add the ingredient to the database
+	        $scope.onSubmit = function() {
+	          // Construct bare info
+	          let newIngredient = {name : $scope.newName, amount : $scope.newAmount};
+	          console.log(newIngredient);
+          	  
+	          // Check valid fields
+	          if(newIngredient.name === undefined) {
+	            alert("Ingerdient name cannot be empty. Please try again.");
+	            return; 
+	          }
+	          if(newIngredient.amount === undefined) {
+		      	alert("Ingredient has invalid unit. Please enter a positive number.");
+		      	return; 
+		      }
+
+          	  
+	          // Add ingredient to inventory
+	          $http.post("/api/v1/inventory", newIngredient).then(function(response) {          
+	            alert("Ingredient " + newIngredient.name + " created!");
+	            console.log(newIngredient);
+	            console.log(response);
+	            
+	            // Update frontend ingredients
+	            $scope.currIngredients = response.data.ingredients;
+	          }).catch(function(response) {
+	            alert("Ingredient already exists");
+	            console.log(newIngredient);
+	            console.log(response);
+	          });
+        	}
+	});
+			
+			/* Without these comments, Thymeleaf will try to parse the Javascript as XML and break itself sometimes */
+			/*]]>*/
+		</script>
+
+		<div ng-app="myApp" ng-controller="addIngredient">
+      <div style="margin-bottom:20px">
+        <h2>Current Ingredients in CoffeeMaker</h2>
+          <div ng-repeat="ingredient in currIngredients track by $index">
+            <h4>{{ingredient.name}} ({{ingredient.amount}})</h4>
+          </div>
+      </div>
+      <div>
+        Please add a new ingredient:
+      </div>
+      <input type="text" ng-model="newName" minlength="1" required="true" placeholder="Name of Ingredient"/>
+		  <input type="number" ng-model="newAmount" required="true" min="1"  placeholder="Amount of Ingredient"/> 
+      <div>
+        <button type="button" ng-click="onSubmit()">Submit</button> 
+      </div>
+		</div>
+	</div>
+
+<!-- Redirect to the home page -->
+  <h2>
+    <a href="/index">Home</a>
+  </h2>
+    
+</body>
+</html>
+
