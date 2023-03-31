@@ -31,6 +31,9 @@ public abstract class CoffeemakerUser extends DomainObject {
     /** Tracks session id for API permissions */
     private String             sessionId;
 
+    /** Time of last api useage, for session timeouts. */
+    private long               lastTime;
+
     /** Random for generating salt */
     private final SecureRandom random = new SecureRandom();
 
@@ -95,11 +98,13 @@ public abstract class CoffeemakerUser extends DomainObject {
         return hexString.toString();
     }
 
-    public void login () {
+    public final String login () {
         final byte[] bytes = new byte[64];
         random.nextBytes( bytes );
         this.sessionId = bytes.toString();
         this.loggedIn = true;
+        this.lastTime = System.currentTimeMillis();
+        return this.sessionId;
     }
 
     public void logout () {
@@ -107,7 +112,16 @@ public abstract class CoffeemakerUser extends DomainObject {
     }
 
     public boolean compareSessionId ( final String sessionId ) {
-        return this.sessionId.equals( sessionId ) && this.loggedIn;
+        // Session expiration
+        if ( System.currentTimeMillis() - this.lastTime > 300000 ) {
+            return false;
+        }
+        // Hash to prevent timing attacks
+        final boolean rightId = getSHA( this.sessionId ).equals( getSHA( sessionId ) ) && this.loggedIn;
+        if ( rightId ) {
+            this.lastTime = System.currentTimeMillis();
+        }
+        return rightId;
     }
 
     @Override
