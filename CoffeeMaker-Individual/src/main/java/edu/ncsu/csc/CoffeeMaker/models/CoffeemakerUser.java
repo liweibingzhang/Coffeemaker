@@ -10,6 +10,8 @@ import java.security.SecureRandom;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import edu.ncsu.csc.CoffeeMaker.models.enums.Permissions;
+
 public abstract class CoffeemakerUser extends DomainObject {
 
     @Id

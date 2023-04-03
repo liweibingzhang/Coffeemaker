@@ -1,6 +1,13 @@
 package edu.ncsu.csc.CoffeeMaker.models;
 
+import edu.ncsu.csc.CoffeeMaker.models.enums.Permissions;
+
 public class CoffeemakerCustomer extends CoffeemakerUser {
+
+    public CoffeemakerCustomer ( final String name, final String password ) {
+        setName( name );
+        setPasswordHash( password );
+    }
 
     @Override
     public boolean hasPermission ( final Permissions permission ) {
