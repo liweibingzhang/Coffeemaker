@@ -22,9 +22,9 @@ public class MappingController {
      *            underlying UI model
      * @return contents of the page
      */
-    @GetMapping ( { "/index", "/" } )
+    @GetMapping ( { "/", "/login.html" } )
     public String index ( final Model model ) {
-        return "index";
+        return "login";
     }
 
     /**
@@ -95,8 +95,8 @@ public class MappingController {
     }
 
     /**
-     * On a GET request to /addingredients, the AddIngredientsController will return
-     * /src/main/resources/templates/addingredients.html.
+     * On a GET request to /addingredients, the AddIngredientsController will
+     * return /src/main/resources/templates/addingredients.html.
      *
      * @param model
      *            underlying UI model
