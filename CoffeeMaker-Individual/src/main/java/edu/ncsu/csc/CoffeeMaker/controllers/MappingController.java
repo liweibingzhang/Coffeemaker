@@ -22,7 +22,7 @@ public class MappingController {
      *            underlying UI model
      * @return contents of the page
      */
-    @GetMapping ( { "/login", "/login.html" } )
+    @GetMapping ( { "/", "/login.html" } )
     public String index ( final Model model ) {
         return "login";
     }
