@@ -47,10 +47,23 @@ public class CoffeemakerUser extends DomainObject {
     @Transient
     private final SecureRandom  random = new SecureRandom();
 
+    /**
+     * Empty constructor for hibernate
+     */
     public CoffeemakerUser () {
         sessionId = "Empty";
     }
 
+    /**
+     * Default constructor for making a new user.
+     *
+     * @param name
+     *            Username of the new user
+     * @param password
+     *            Password of the new user
+     * @param type
+     *            Type of user, "Staff" or "Customer"
+     */
     public CoffeemakerUser ( final String name, final String password, final String type ) {
         setName( name );
         setPasswordHash( password );
@@ -66,6 +79,13 @@ public class CoffeemakerUser extends DomainObject {
         sessionId = "Empty";
     }
 
+    /**
+     * Check if a user has a certain permission.
+     *
+     * @param permission
+     *            Permission to check
+     * @return True if the user has that permssion
+     */
     public boolean hasPermission ( final Permissions permission ) {
         if ( userType == CoffeemakerUserType.Customer ) {
             switch ( permission ) {
@@ -110,26 +130,59 @@ public class CoffeemakerUser extends DomainObject {
         return false;
     }
 
+    /**
+     * Gets user type, staff or customer.
+     *
+     * @return
+     */
     public CoffeemakerUserType getUserType () {
         return userType;
     }
 
+    /**
+     * Sets the user type
+     *
+     * @param userType
+     *            User type, Staff or Customer
+     */
     public void setUserType ( final CoffeemakerUserType userType ) {
         this.userType = userType;
     }
 
+    /**
+     * Gets the name of the user.
+     *
+     * @return User's username.
+     */
     public String getName () {
         return name;
     }
 
+    /**
+     * Sets the username.
+     *
+     * @param name
+     *            Name to set.
+     */
     public void setName ( final String name ) {
         this.name = name;
     }
 
+    /**
+     * Gets the hashed form of the password.
+     *
+     * @return Hashed password.
+     */
     public String getPasswordHash () {
         return passwordHash;
     }
 
+    /**
+     * Sets the hash of the password, from a plaintext password.
+     *
+     * @param password
+     *            Plaintext password
+     */
     public void setPasswordHash ( final String password ) {
         final byte[] bytes = new byte[16];
         random.nextBytes( bytes );
@@ -137,10 +190,24 @@ public class CoffeemakerUser extends DomainObject {
         this.passwordHash = toHexString( getSHA( password + salt ) );
     }
 
+    /**
+     * Compares a plaintext password to the current set password
+     *
+     * @param password
+     *            Password to compare
+     * @return True if the passwords are equal
+     */
     public boolean compareHash ( final String password ) {
         return passwordHash.equals( toHexString( getSHA( password + salt ) ) );
     }
 
+    /**
+     * Get SHA256 hash of string
+     *
+     * @param input
+     *            Text to hash
+     * @return Hash of the password
+     */
     private static byte[] getSHA ( final String input ) {
         MessageDigest md = null;
         try {
@@ -154,6 +221,13 @@ public class CoffeemakerUser extends DomainObject {
         return md.digest( input.getBytes( StandardCharsets.UTF_8 ) );
     }
 
+    /**
+     * Converts bytes to a hex string.
+     *
+     * @param hash
+     *            Bytes.
+     * @return Hex string.
+     */
     private static String toHexString ( final byte[] hash ) {
         final BigInteger number = new BigInteger( 1, hash );
 
@@ -166,6 +240,11 @@ public class CoffeemakerUser extends DomainObject {
         return hexString.toString();
     }
 
+    /**
+     * Logs this user in.
+     *
+     * @return Session ID to send to the client.
+     */
     public final String login () {
         final byte[] bytes = new byte[64];
         random.nextBytes( bytes );
@@ -175,10 +254,20 @@ public class CoffeemakerUser extends DomainObject {
         return this.sessionId;
     }
 
+    /**
+     * Disables this users current session ID.
+     */
     public void logout () {
         this.loggedIn = false;
     }
 
+    /**
+     * Compares a given session ID to this users.
+     *
+     * @param sessionId
+     *            Session ID to compare.
+     * @return True if the session IDs are equal
+     */
     public boolean compareSessionId ( final String sessionId ) {
         // Session expiration
         if ( System.currentTimeMillis() - this.lastTime > 300000 ) {
@@ -194,6 +283,9 @@ public class CoffeemakerUser extends DomainObject {
         return rightId;
     }
 
+    /**
+     * Hibernate method for getting this classes unique id.
+     */
     @Override
     public Serializable getId () {
         // TODO Auto-generated method stub

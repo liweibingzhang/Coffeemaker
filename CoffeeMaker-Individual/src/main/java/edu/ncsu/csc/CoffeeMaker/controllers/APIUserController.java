@@ -109,6 +109,9 @@ public class APIUserController extends APIController {
         else {
             return new ResponseEntity( errorResponse( "bad user type" ), HttpStatus.BAD_REQUEST );
         }
+        if ( service.findByName( json.get( "username" ) ) != null ) {
+            return new ResponseEntity( errorResponse( "Username taken" ), HttpStatus.CONFLICT );
+        }
         service.save( user );
         return new ResponseEntity( user.login(), HttpStatus.OK );
     }
