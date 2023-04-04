@@ -25,6 +25,7 @@ import edu.ncsu.csc.CoffeeMaker.models.enums.Permissions;
 @Entity
 public class CoffeemakerUser extends DomainObject {
 
+    /** User id */
     @Id
     @GeneratedValue
     private Long                id;
