@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import edu.ncsu.csc.CoffeeMaker.models.CoffeemakerCustomer;
-import edu.ncsu.csc.CoffeeMaker.models.CoffeemakerStaff;
 import edu.ncsu.csc.CoffeeMaker.models.CoffeemakerUser;
 import edu.ncsu.csc.CoffeeMaker.services.UserService;
 
@@ -38,27 +36,54 @@ public class APIUserController extends APIController {
     private UserService service;
 
     /**
-     * REST API method to provide GET access to a specific user, as indicated by
-     * the path variable provided (the name of the recipe desired)
+     * REST API method to provide GET access to a specific user for login, as
+     * indicated by the path variable provided
      *
      * @param json
      *            Json of user to login (username, password)
      *
      * @return response to the request
      */
-    @GetMapping ( BASE_PATH + "/user" )
+    @GetMapping ( BASE_PATH + "/user/login" )
     public ResponseEntity loginUser ( @RequestBody final Map<String, String> json ) {
         final CoffeemakerUser user = service.findByName( json.get( "username" ) );
         if ( user == null ) {
-            new ResponseEntity( errorResponse( "Username incorrect" ), HttpStatus.NOT_FOUND );
+            return new ResponseEntity( errorResponse( "Username incorrect" ), HttpStatus.NOT_FOUND );
         }
         if ( user.compareHash( json.get( "password" ) ) ) {
-            return new ResponseEntity( user.login(), HttpStatus.OK );
+            final String id = user.login();
+            service.save( user );
+            return new ResponseEntity( id, HttpStatus.OK );
         }
         else {
-            new ResponseEntity( errorResponse( "Incorrect password" ), HttpStatus.UNAUTHORIZED );
+            return new ResponseEntity( errorResponse( "Incorrect password" ), HttpStatus.UNAUTHORIZED );
         }
-        return new ResponseEntity( errorResponse( "Login error" ), HttpStatus.BAD_REQUEST );
+    }
+
+    /**
+     * REST API method to provide GET access to a specific user for logout, as
+     * indicated by the path variable provided
+     *
+     * @param json
+     *            Json of user to login (username, password)
+     *
+     * @return response to the request
+     */
+    @GetMapping ( BASE_PATH + "/user/logout" )
+    public ResponseEntity logoutUser ( @RequestBody final Map<String, String> json ) {
+        final CoffeemakerUser user = service.findByName( json.get( "username" ) );
+        if ( user == null ) {
+            return new ResponseEntity( errorResponse( "Username incorrect" ), HttpStatus.NOT_FOUND );
+        }
+        if ( user.compareSessionId( json.get( "sessionid" ) ) ) {
+            user.logout();
+            service.save( user );
+            return new ResponseEntity( "Logged out", HttpStatus.OK );
+        }
+        else {
+            return new ResponseEntity( errorResponse( "Incorrect session ID, possibly expired or already logged out." ),
+                    HttpStatus.UNAUTHORIZED );
+        }
     }
 
     /**
@@ -76,10 +101,10 @@ public class APIUserController extends APIController {
     public ResponseEntity makeUser ( @RequestBody final Map<String, String> json ) {
         CoffeemakerUser user;
         if ( json.get( "type" ).equals( "Staff" ) ) {
-            user = new CoffeemakerStaff( json.get( "username" ), json.get( "password" ) );
+            user = new CoffeemakerUser( json.get( "username" ), json.get( "password" ), "Staff" );
         }
         else if ( json.get( "type" ).equals( "Customer" ) ) {
-            user = new CoffeemakerCustomer( json.get( "username" ), json.get( "password" ) );
+            user = new CoffeemakerUser( json.get( "username" ), json.get( "password" ), "Customer" );
         }
         else {
             return new ResponseEntity( errorResponse( "bad user type" ), HttpStatus.BAD_REQUEST );

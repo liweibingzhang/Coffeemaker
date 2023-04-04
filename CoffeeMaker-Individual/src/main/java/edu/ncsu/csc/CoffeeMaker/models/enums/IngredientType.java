@@ -1,13 +1,9 @@
-/**
- *
- */
 package edu.ncsu.csc.CoffeeMaker.models.enums;
 
 /**
  * Representation of the currently available ingredient types.
  *
  * @author Osama Albahrani (osalbahr)
- *
  */
 public enum IngredientType {
     /** Bean powder */

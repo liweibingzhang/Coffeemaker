@@ -7,49 +7,115 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
+import edu.ncsu.csc.CoffeeMaker.models.enums.CoffeemakerUserType;
 import edu.ncsu.csc.CoffeeMaker.models.enums.Permissions;
 
-public abstract class CoffeemakerUser extends DomainObject {
+@Entity
+public class CoffeemakerUser extends DomainObject {
 
     @Id
     @GeneratedValue
-    private Long               id;
+    private Long                id;
 
     /** Username, represented as a string. */
-    private String             name;
+    private String              name;
 
     /** User password hashed, represented as a string. */
-    private String             passwordHash;
+    private String              passwordHash;
 
     /** User password salt, represented as a string. */
-    private String             salt;
+    private String              salt;
 
     /** Tracks if this user is logged in */
-    private boolean            loggedIn;
+    private boolean             loggedIn;
 
     /** Tracks session id for API permissions */
-    private String             sessionId;
+    private String              sessionId;
 
     /** Time of last api useage, for session timeouts. */
-    private long               lastTime;
+    private long                lastTime;
+
+    /** Type of user, staff or customer */
+    private CoffeemakerUserType userType;
 
     /** Random for generating salt */
-    private final SecureRandom random = new SecureRandom();
+    @Transient
+    private final SecureRandom  random = new SecureRandom();
 
     public CoffeemakerUser () {
-
+        sessionId = "Empty";
     }
 
-    public CoffeemakerUser ( final String name, final String password ) {
+    public CoffeemakerUser ( final String name, final String password, final String type ) {
         setName( name );
         setPasswordHash( password );
+        if ( type.equals( "Staff" ) ) {
+            userType = CoffeemakerUserType.Staff;
+        }
+        else if ( type.equals( "Customer" ) ) {
+            userType = CoffeemakerUserType.Customer;
+        }
+        else {
+            throw new IllegalArgumentException( "User type invalid" );
+        }
+        sessionId = "Empty";
     }
 
     public boolean hasPermission ( final Permissions permission ) {
+        if ( userType == CoffeemakerUserType.Customer ) {
+            switch ( permission ) {
+                case CanModifyInventory:
+                    return false;
+                case CanEditRecipe:
+                    return false;
+                case CanCreateRecipe:
+                    return false;
+                case CanOrderRecipe:
+                    return true;
+                case CanMakeRecipe:
+                    return false;
+                case CanFulfillOrder:
+                    return false;
+                case CanPickupOrder:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        else if ( userType == CoffeemakerUserType.Staff ) {
+            switch ( permission ) {
+                case CanModifyInventory:
+                    return true;
+                case CanEditRecipe:
+                    return true;
+                case CanCreateRecipe:
+                    return true;
+                case CanOrderRecipe:
+                    return true;
+                case CanMakeRecipe:
+                    return true;
+                case CanFulfillOrder:
+                    return true;
+                case CanPickupOrder:
+                    return true;
+                default:
+                    return false;
+            }
+        }
         return false;
+    }
+
+    public CoffeemakerUserType getUserType () {
+        return userType;
+    }
+
+    public void setUserType ( final CoffeemakerUserType userType ) {
+        this.userType = userType;
     }
 
     public String getName () {
@@ -103,7 +169,7 @@ public abstract class CoffeemakerUser extends DomainObject {
     public final String login () {
         final byte[] bytes = new byte[64];
         random.nextBytes( bytes );
-        this.sessionId = bytes.toString();
+        this.sessionId = toHexString( bytes );
         this.loggedIn = true;
         this.lastTime = System.currentTimeMillis();
         return this.sessionId;
@@ -119,7 +185,9 @@ public abstract class CoffeemakerUser extends DomainObject {
             return false;
         }
         // Hash to prevent timing attacks
-        final boolean rightId = getSHA( this.sessionId ).equals( getSHA( sessionId ) ) && this.loggedIn;
+        final String A = toHexString( getSHA( this.sessionId ) );
+        final String B = toHexString( getSHA( sessionId ) );
+        final boolean rightId = A.equals( B ) && this.loggedIn;
         if ( rightId ) {
             this.lastTime = System.currentTimeMillis();
         }

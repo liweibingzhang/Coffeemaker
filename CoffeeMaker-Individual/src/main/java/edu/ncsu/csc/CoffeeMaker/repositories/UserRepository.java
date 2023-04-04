@@ -5,10 +5,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import edu.ncsu.csc.CoffeeMaker.models.CoffeemakerUser;
 
 /**
- * RecipeRepository is used to provide CRUD operations for the Recipe model.
- * Spring will generate appropriate code with JPA.
+ * UserRepository is used to provide CRUD operations for the User model. Spring
+ * will generate appropriate code with JPA.
  *
- * @author Kai Presler-Marshall
+ * @author Finn Bacheldor
  *
  */
 public interface UserRepository extends JpaRepository<CoffeemakerUser, Long> {
