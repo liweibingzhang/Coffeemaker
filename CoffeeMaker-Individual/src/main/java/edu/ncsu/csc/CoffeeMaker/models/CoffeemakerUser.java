@@ -15,6 +15,13 @@ import javax.persistence.Transient;
 import edu.ncsu.csc.CoffeeMaker.models.enums.CoffeemakerUserType;
 import edu.ncsu.csc.CoffeeMaker.models.enums.Permissions;
 
+/**
+ * Coffeemaker user. Handles authentication and holds information like passwords
+ * and user type.
+ *
+ * @author finnt
+ *
+ */
 @Entity
 public class CoffeemakerUser extends DomainObject {
 
@@ -67,10 +74,10 @@ public class CoffeemakerUser extends DomainObject {
     public CoffeemakerUser ( final String name, final String password, final String type ) {
         setName( name );
         setPasswordHash( password );
-        if ( type.equals( "Staff" ) ) {
+        if ( "Staff".equals( type ) ) {
             userType = CoffeemakerUserType.Staff;
         }
-        else if ( type.equals( "Customer" ) ) {
+        else if ( "Customer".equals( type ) ) {
             userType = CoffeemakerUserType.Customer;
         }
         else {
@@ -133,7 +140,7 @@ public class CoffeemakerUser extends DomainObject {
     /**
      * Gets user type, staff or customer.
      *
-     * @return
+     * @return user type, staff or customer.
      */
     public CoffeemakerUserType getUserType () {
         return userType;
@@ -274,9 +281,9 @@ public class CoffeemakerUser extends DomainObject {
             return false;
         }
         // Hash to prevent timing attacks
-        final String A = toHexString( getSHA( this.sessionId ) );
-        final String B = toHexString( getSHA( sessionId ) );
-        final boolean rightId = A.equals( B ) && this.loggedIn;
+        final String thisSessionHashed = toHexString( getSHA( this.sessionId ) );
+        final String proposedSessionHashed = toHexString( getSHA( sessionId ) );
+        final boolean rightId = thisSessionHashed.equals( proposedSessionHashed ) && this.loggedIn;
         if ( rightId ) {
             this.lastTime = System.currentTimeMillis();
         }
