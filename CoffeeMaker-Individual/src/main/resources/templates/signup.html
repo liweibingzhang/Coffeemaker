@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<title> Sign Up</title>
+<link rel="stylesheet" href="css/bootstrap.css" />
+<link rel="stylesheet" href="css/app.css" />
+<body>
+	<script	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+	<script>
+		/* Without these comments, Thymeleaf will try to parse the Javascript as XML and break itself sometimes */
+		/*<![CDATA[*/ 
+		var app = angular.module('myApp', []);
+		app.controller('signup', function($scope, $http, $q) {
+			$scope.userTypes = [
+				{value: 1, display: 'Customer'},
+				{value: 2, display: 'Staff'}
+			];
+			
+			$scope.howdy = function () {
+				alert("Functionality Coming Soon!!!");
+			}
+		});
+		/* Without these comments, Thymeleaf will try to parse the Javascript as XML and break itself sometimes */
+		/*]]>*/
+	</script>
+	<div ng-app="myApp" ng-controller="signup">
+	<h2>Sign up</h2>
+	<div class="formcontainer">
+		<div class="row">
+			<div class="form-group col-md-12">
+				<label class="col-md-2 control-lable" for="file">First Name : </label>
+					<div class="col-md-10">
+					<input type="text" ng-model="firstName" minlength="1" required="true" placeholder="First Name"/>
+					</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group col-md-12">
+				<label class="col-md-2 control-lable" for="file">Last Name : </label>
+					<div class="col-md-10">
+					<input type="text" ng-model="lastName" minlength="1" required="true" placeholder="Last Name"/>
+					</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group col-md-12">
+				<label class="col-md-2 control-lable" for="file">Username : </label>
+					<div class="col-md-10">
+					<input type="text" ng-model="username" minlength="1" required="true" placeholder="username"/>
+					</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group col-md-12">
+				<label class="col-md-2 control-lable" for="file">Password : </label>
+					<div class="col-md-10">
+					<input type="text" ng-model="password" minlength="1" required="true" placeholder="password"/>
+					</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="form-group col-md-12">
+				<label class="col-md-2 control-lable" for="file">Confirm Password : </label>
+					<div class="col-md-10">
+					<input type="text" ng-model="passwordConfrim" minlength="1" required="true" placeholder="password"/>
+					</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm">
+				Select time interval: <br />
+				<select ng-model="interval" ng-options="item as item.display for item in userTypes" required="true">
+					<option value="">Select User Type</option>
+				</select>
+			</div>
+		</div>
+		<div>
+			<br>
+			<button type="button" ng-click="howdy()"class="btn btn-danger" ng-disabled="addInventoryForm.$pristine">Sign Up</button>
+		</div>
+	</div>
+    </div>
+</body>
+</html>
