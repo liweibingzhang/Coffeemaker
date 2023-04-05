@@ -95,8 +95,8 @@ public class MappingController {
     }
 
     /**
-     * On a GET request to /addingredients, the AddIngredientsController will return
-     * /src/main/resources/templates/addingredients.html.
+     * On a GET request to /addingredients, the AddIngredientsController will
+     * return /src/main/resources/templates/addingredients.html.
      *
      * @param model
      *            underlying UI model
@@ -105,6 +105,19 @@ public class MappingController {
     @GetMapping ( { "/addingredients", "/addingredients.html" } )
     public String addIngredientsForm ( final Model model ) {
         return "addingredients";
+    }
+
+    /**
+     * On a GET request to /customerpage, the CustomerPageController will return
+     * /src/main/resources/templates/customerpage.html.
+     *
+     * @param model
+     *            underlying UI model
+     * @return contents of the page
+     */
+    @GetMapping ( { "/customerpage", "/customerpage.html" } )
+    public String customerpageForm ( final Model model ) {
+        return "customerpage";
     }
 
 }
