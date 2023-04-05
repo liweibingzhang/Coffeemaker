@@ -118,6 +118,8 @@ public class APIUserController extends APIController {
             return new ResponseEntity( errorResponse( "Username taken" ), HttpStatus.CONFLICT );
         }
         service.save( user );
-        return new ResponseEntity( user.login(), HttpStatus.OK );
+        final Map<String, String> response = new TreeMap<>();
+        response.put( "sessionid", user.login() );
+        return new ResponseEntity( response, HttpStatus.OK );
     }
 }
