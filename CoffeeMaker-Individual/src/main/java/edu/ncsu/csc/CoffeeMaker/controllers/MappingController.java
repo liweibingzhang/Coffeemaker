@@ -107,4 +107,16 @@ public class MappingController {
         return "addingredients";
     }
 
+    /**
+     * On a GET request to /signup, the APIUserController will return
+     * /src/main/resources/templates/signups.html.
+     *
+     * @param model
+     *            underlying UI model
+     * @return contents of the page
+     */
+    @GetMapping ( { "/signup", "/signup.html" } )
+    public String signupPage ( final Model model ) {
+        return "signup";
+    }
 }
