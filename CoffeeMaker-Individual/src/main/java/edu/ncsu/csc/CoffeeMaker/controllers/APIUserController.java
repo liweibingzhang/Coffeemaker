@@ -20,13 +20,12 @@ import edu.ncsu.csc.CoffeeMaker.services.UserService;
 
 /**
  * This is the controller that holds the REST endpoints that handle CRUD
- * operations for Recipes.
+ * operations for Users.
  *
  * Spring will automatically convert all of the ResponseEntity and List results
  * to JSON
  *
- * @author Kai Presler-Marshall
- * @author Michelle Lemons
+ * @author Finn Bacheldor
  *
  */
 @SuppressWarnings ( { "unchecked", "rawtypes" } )
@@ -86,8 +85,10 @@ public class APIUserController extends APIController {
      * REST API method to provide GET access to a specific user for logout, as
      * indicated by the path variable provided
      *
-     * @param json
-     *            Json of user to login (username, password)
+     * @param username
+     *            Username
+     * @param sessionid
+     *            Current valid session id for this user
      *
      * @return response to the request
      */
@@ -117,6 +118,8 @@ public class APIUserController extends APIController {
      * @param json
      *            Json (username, password, type (Staff/Customer) of the new
      *            user
+     * @param response
+     *            Used to send cookies back to the client
      * @return ResponseEntity indicating success if the User could be saved to
      *         the database, or an error if it could not be
      */
