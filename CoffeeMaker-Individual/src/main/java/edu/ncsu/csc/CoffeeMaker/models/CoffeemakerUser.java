@@ -278,7 +278,7 @@ public class CoffeemakerUser extends DomainObject {
      */
     public boolean compareSessionId ( final String sessionId ) {
         // Session expiration
-        if ( System.currentTimeMillis() - this.lastTime > 300000 ) {
+        if ( System.currentTimeMillis() - this.lastTime > 100000 ) {
             return false;
         }
         // Hash to prevent timing attacks

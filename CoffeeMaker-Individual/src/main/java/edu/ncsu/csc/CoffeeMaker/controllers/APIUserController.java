@@ -40,7 +40,7 @@ public class APIUserController extends APIController {
     @Autowired
     private UserService          service;
 
-    private static final boolean USE_SECURE_COOKIES = true;
+    private static final boolean USE_SECURE_COOKIES = false;
 
     /**
      * REST API method to provide GET access to a specific user for login, as
