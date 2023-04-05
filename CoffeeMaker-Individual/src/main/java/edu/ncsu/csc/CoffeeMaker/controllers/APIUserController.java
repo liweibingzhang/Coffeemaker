@@ -48,10 +48,11 @@ public class APIUserController extends APIController {
      *
      * @return response to the request
      */
-    @GetMapping ( BASE_PATH + "/user/login" )
+    @PostMapping ( BASE_PATH + "/user/login" )
     public ResponseEntity loginUser ( @RequestBody final Map<String, String> json,
             final HttpServletResponse response ) {
         final CoffeemakerUser user = service.findByName( json.get( "username" ) );
+        System.out.println( user );
         if ( user == null ) {
             return new ResponseEntity( errorResponse( "Username incorrect" ), HttpStatus.NOT_FOUND );
         }

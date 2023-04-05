@@ -119,9 +119,10 @@ public class MappingController {
     public String signupPage ( final Model model ) {
         return "signup";
     }
+
     /**
-     * On a GET request to staff, the StaffController will
-     * return /src/main/resources/templates/staff.html.
+     * On a GET request to staff, the StaffController will return
+     * /src/main/resources/templates/staff.html.
      *
      * @param model
      *            underlying UI model
