@@ -1,11 +1,14 @@
 package edu.ncsu.csc.CoffeeMaker.controllers;
 
 import java.util.Map;
-import java.util.TreeMap;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,7 +50,8 @@ public class APIUserController extends APIController {
      * @return response to the request
      */
     @GetMapping ( BASE_PATH + "/user/login" )
-    public ResponseEntity loginUser ( @RequestBody final Map<String, String> json ) {
+    public ResponseEntity loginUser ( @RequestBody final Map<String, String> json,
+            final HttpServletResponse response ) {
         final CoffeemakerUser user = service.findByName( json.get( "username" ) );
         if ( user == null ) {
             return new ResponseEntity( errorResponse( "Username incorrect" ), HttpStatus.NOT_FOUND );
@@ -55,10 +59,23 @@ public class APIUserController extends APIController {
         if ( user.compareHash( json.get( "password" ) ) ) {
             final String id = user.login();
             service.save( user );
-            final Map<String, String> response = new TreeMap<>();
-            response.put( "sessionid", id );
-            response.put( "type", user.getUserType() == CoffeemakerUserType.Customer ? "Customer" : "Staff" );
-            return new ResponseEntity( response, HttpStatus.OK );
+            final Cookie cookieSessionID = new Cookie( "sessionid", id );
+            cookieSessionID.setHttpOnly( true );
+            cookieSessionID.setSecure( true );
+            cookieSessionID.setDomain( "localhost" );
+            final Cookie cookieUsername = new Cookie( "username", json.get( "username" ) );
+            cookieUsername.setHttpOnly( true );
+            cookieUsername.setSecure( true );
+            cookieUsername.setDomain( "localhost" );
+            final Cookie cookieType = new Cookie( "type",
+                    user.getUserType() == CoffeemakerUserType.Customer ? "Customer" : "Staff" );
+            cookieType.setHttpOnly( false );
+            cookieType.setSecure( true );
+            cookieType.setDomain( "localhost" );
+            response.addCookie( cookieSessionID );
+            response.addCookie( cookieUsername );
+            response.addCookie( cookieType );
+            return new ResponseEntity( HttpStatus.OK );
         }
         else {
             return new ResponseEntity( errorResponse( "Incorrect password" ), HttpStatus.UNAUTHORIZED );
@@ -75,12 +92,13 @@ public class APIUserController extends APIController {
      * @return response to the request
      */
     @GetMapping ( BASE_PATH + "/user/logout" )
-    public ResponseEntity logoutUser ( @RequestBody final Map<String, String> json ) {
-        final CoffeemakerUser user = service.findByName( json.get( "username" ) );
+    public ResponseEntity logoutUser ( @CookieValue ( "username" ) final String username,
+            @CookieValue ( "sessionid" ) final String sessionid ) {
+        final CoffeemakerUser user = service.findByName( username );
         if ( user == null ) {
             return new ResponseEntity( errorResponse( "Username incorrect" ), HttpStatus.NOT_FOUND );
         }
-        if ( user.compareSessionId( json.get( "sessionid" ) ) ) {
+        if ( user.compareSessionId( sessionid ) ) {
             user.logout();
             service.save( user );
             return new ResponseEntity( "Logged out", HttpStatus.OK );
@@ -100,10 +118,10 @@ public class APIUserController extends APIController {
      *            Json (username, password, type (Staff/Customer) of the new
      *            user
      * @return ResponseEntity indicating success if the User could be saved to
-     *         the inventory, or an error if it could not be
+     *         the database, or an error if it could not be
      */
     @PostMapping ( BASE_PATH + "/user" )
-    public ResponseEntity makeUser ( @RequestBody final Map<String, String> json ) {
+    public ResponseEntity makeUser ( @RequestBody final Map<String, String> json, final HttpServletResponse response ) {
         CoffeemakerUser user;
         if ( json.get( "type" ).equals( "Staff" ) ) {
             user = new CoffeemakerUser( json.get( "username" ), json.get( "password" ), "Staff" );
@@ -117,9 +135,24 @@ public class APIUserController extends APIController {
         if ( service.findByName( json.get( "username" ) ) != null ) {
             return new ResponseEntity( errorResponse( "Username taken" ), HttpStatus.CONFLICT );
         }
+        final String id = user.login();
         service.save( user );
-        final Map<String, String> response = new TreeMap<>();
-        response.put( "sessionid", user.login() );
-        return new ResponseEntity( response, HttpStatus.OK );
+        final Cookie cookieSessionID = new Cookie( "sessionid", id );
+        cookieSessionID.setHttpOnly( true );
+        cookieSessionID.setSecure( true );
+        cookieSessionID.setDomain( "localhost" );
+        final Cookie cookieUsername = new Cookie( "username", json.get( "username" ) );
+        cookieUsername.setHttpOnly( false );
+        cookieUsername.setSecure( true );
+        cookieUsername.setDomain( "localhost" );
+        final Cookie cookieType = new Cookie( "type",
+                user.getUserType() == CoffeemakerUserType.Customer ? "Customer" : "Staff" );
+        cookieType.setHttpOnly( false );
+        cookieType.setSecure( true );
+        cookieType.setDomain( "localhost" );
+        response.addCookie( cookieSessionID );
+        response.addCookie( cookieUsername );
+        response.addCookie( cookieType );
+        return new ResponseEntity( HttpStatus.OK );
     }
 }

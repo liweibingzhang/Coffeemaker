@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.servlet.http.Cookie;
 import javax.transaction.Transactional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -109,9 +110,7 @@ public class APIUserTest {
         final MvcResult result = mvc.perform( get( "/api/v1/user/login" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( userDetails ) ) ).andExpect( status().isOk() ).andReturn();
 
-        final String id = result.getResponse().getContentAsString().split( "\"" )[3];
-
-        System.out.print( id );
+        final String id = result.getResponse().getCookie( "sessionid" ).getValue();
 
         assertTrue( user.compareSessionId( id ) );
 
@@ -119,7 +118,7 @@ public class APIUserTest {
         userDetails.remove( "password" );
 
         mvc.perform( get( "/api/v1/user/logout" ).contentType( MediaType.APPLICATION_JSON )
-                .content( TestUtils.asJsonString( userDetails ) ) ).andExpect( status().isOk() ).andReturn();
+                .cookie( result.getResponse().getCookies() ) ).andExpect( status().isOk() ).andReturn();
 
         assertTrue( !user.compareSessionId( id ) );
 
@@ -134,7 +133,10 @@ public class APIUserTest {
         userDetails.put( "password", "funny" );
         mvc.perform( get( "/api/v1/user/login" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( userDetails ) ) ).andExpect( status().isNotFound() );
+        final Cookie funnyCookie = result.getResponse().getCookie( "username" );
+        funnyCookie.setValue( "funny" );
         mvc.perform( get( "/api/v1/user/logout" ).contentType( MediaType.APPLICATION_JSON )
-                .content( TestUtils.asJsonString( userDetails ) ) ).andExpect( status().isNotFound() );
+                .cookie( result.getResponse().getCookie( "sessionid" ), funnyCookie ) )
+                .andExpect( status().isNotFound() );
     }
 }
