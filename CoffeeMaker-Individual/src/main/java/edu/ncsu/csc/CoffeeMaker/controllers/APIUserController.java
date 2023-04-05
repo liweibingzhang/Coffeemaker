@@ -1,6 +1,7 @@
 package edu.ncsu.csc.CoffeeMaker.controllers;
 
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.ncsu.csc.CoffeeMaker.models.CoffeemakerUser;
+import edu.ncsu.csc.CoffeeMaker.models.enums.CoffeemakerUserType;
 import edu.ncsu.csc.CoffeeMaker.services.UserService;
 
 /**
@@ -53,7 +55,10 @@ public class APIUserController extends APIController {
         if ( user.compareHash( json.get( "password" ) ) ) {
             final String id = user.login();
             service.save( user );
-            return new ResponseEntity( id, HttpStatus.OK );
+            final Map<String, String> response = new TreeMap<>();
+            response.put( "sessionid", id );
+            response.put( "type", user.getUserType() == CoffeemakerUserType.Customer ? "Customer" : "Staff" );
+            return new ResponseEntity( response, HttpStatus.OK );
         }
         else {
             return new ResponseEntity( errorResponse( "Incorrect password" ), HttpStatus.UNAUTHORIZED );

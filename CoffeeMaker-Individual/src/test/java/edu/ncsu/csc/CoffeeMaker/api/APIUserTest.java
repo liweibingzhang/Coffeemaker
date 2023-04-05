@@ -109,7 +109,9 @@ public class APIUserTest {
         final MvcResult result = mvc.perform( get( "/api/v1/user/login" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( userDetails ) ) ).andExpect( status().isOk() ).andReturn();
 
-        final String id = result.getResponse().getContentAsString();
+        final String id = result.getResponse().getContentAsString().split( "\"" )[3];
+
+        System.out.print( id );
 
         assertTrue( user.compareSessionId( id ) );
 
