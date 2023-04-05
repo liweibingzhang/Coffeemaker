@@ -132,4 +132,17 @@ public class MappingController {
     public String staffForm ( final Model model ) {
         return "staff";
     }
+
+    /**
+     * On a GET request to staff, the CustomerController will return
+     * /src/main/resources/templates/customer.html.
+     *
+     * @param model
+     *            underlying UI model
+     * @return contents of the page
+     */
+    @GetMapping ( { "/customer", "/customer.html" } )
+    public String customer ( final Model model ) {
+        return "customer";
+    }
 }

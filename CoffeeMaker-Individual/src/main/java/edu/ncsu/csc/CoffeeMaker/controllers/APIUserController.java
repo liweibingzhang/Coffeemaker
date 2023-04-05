@@ -75,7 +75,7 @@ public class APIUserController extends APIController {
             response.addCookie( cookieSessionID );
             response.addCookie( cookieUsername );
             response.addCookie( cookieType );
-            return new ResponseEntity( HttpStatus.OK );
+            return new ResponseEntity( user.getUserType(), HttpStatus.OK );
         }
         else {
             return new ResponseEntity( errorResponse( "Incorrect password" ), HttpStatus.UNAUTHORIZED );
