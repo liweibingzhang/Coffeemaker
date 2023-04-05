@@ -2,11 +2,12 @@ package edu.ncsu.csc.CoffeeMaker.controllers;
 
 import java.util.Map;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,7 +38,9 @@ public class APIUserController extends APIController {
      * manipulating the User model
      */
     @Autowired
-    private UserService service;
+    private UserService          service;
+
+    private static final boolean USE_SECURE_COOKIES = true;
 
     /**
      * REST API method to provide GET access to a specific user for login, as
@@ -59,22 +62,17 @@ public class APIUserController extends APIController {
         if ( user.compareHash( json.get( "password" ) ) ) {
             final String id = user.login();
             service.save( user );
-            final Cookie cookieSessionID = new Cookie( "sessionid", id );
-            cookieSessionID.setHttpOnly( true );
-            cookieSessionID.setSecure( true );
-            cookieSessionID.setDomain( "localhost" );
-            final Cookie cookieUsername = new Cookie( "username", json.get( "username" ) );
-            cookieUsername.setHttpOnly( true );
-            cookieUsername.setSecure( true );
-            cookieUsername.setDomain( "localhost" );
-            final Cookie cookieType = new Cookie( "type",
-                    user.getUserType() == CoffeemakerUserType.Customer ? "Customer" : "Staff" );
-            cookieType.setHttpOnly( false );
-            cookieType.setSecure( true );
-            cookieType.setDomain( "localhost" );
-            response.addCookie( cookieSessionID );
-            response.addCookie( cookieUsername );
-            response.addCookie( cookieType );
+            final ResponseCookie cookieSessionID = ResponseCookie.from( "sessionid", id ).httpOnly( true )
+                    .secure( USE_SECURE_COOKIES ).path( "/" ).domain( "localhost" ).sameSite( "Strict" ).build();
+            final ResponseCookie cookieName = ResponseCookie.from( "username", user.getName() ).httpOnly( false )
+                    .secure( USE_SECURE_COOKIES ).path( "/" ).domain( "localhost" ).sameSite( "Strict" ).build();
+            final ResponseCookie cookieType = ResponseCookie
+                    .from( "type", user.getUserType() == CoffeemakerUserType.Customer ? "Customer" : "Staff" )
+                    .httpOnly( false ).secure( USE_SECURE_COOKIES ).path( "/" ).domain( "localhost" )
+                    .sameSite( "Strict" ).build();
+            response.addHeader( HttpHeaders.SET_COOKIE, cookieSessionID.toString() );
+            response.addHeader( HttpHeaders.SET_COOKIE, cookieName.toString() );
+            response.addHeader( HttpHeaders.SET_COOKIE, cookieType.toString() );
             return new ResponseEntity( user.getUserType(), HttpStatus.OK );
         }
         else {
@@ -141,22 +139,17 @@ public class APIUserController extends APIController {
         }
         final String id = user.login();
         service.save( user );
-        final Cookie cookieSessionID = new Cookie( "sessionid", id );
-        cookieSessionID.setHttpOnly( true );
-        cookieSessionID.setSecure( true );
-        cookieSessionID.setDomain( "localhost" );
-        final Cookie cookieUsername = new Cookie( "username", json.get( "username" ) );
-        cookieUsername.setHttpOnly( false );
-        cookieUsername.setSecure( true );
-        cookieUsername.setDomain( "localhost" );
-        final Cookie cookieType = new Cookie( "type",
-                user.getUserType() == CoffeemakerUserType.Customer ? "Customer" : "Staff" );
-        cookieType.setHttpOnly( false );
-        cookieType.setSecure( true );
-        cookieType.setDomain( "localhost" );
-        response.addCookie( cookieSessionID );
-        response.addCookie( cookieUsername );
-        response.addCookie( cookieType );
+        final ResponseCookie cookieSessionID = ResponseCookie.from( "sessionid", id ).httpOnly( true )
+                .secure( USE_SECURE_COOKIES ).path( "/" ).domain( "localhost" ).sameSite( "Strict" ).build();
+        final ResponseCookie cookieName = ResponseCookie.from( "username", user.getName() ).httpOnly( false )
+                .secure( USE_SECURE_COOKIES ).path( "/" ).domain( "localhost" ).sameSite( "Strict" ).build();
+        final ResponseCookie cookieType = ResponseCookie
+                .from( "type", user.getUserType() == CoffeemakerUserType.Customer ? "Customer" : "Staff" )
+                .httpOnly( false ).secure( USE_SECURE_COOKIES ).path( "/" ).domain( "localhost" ).sameSite( "Strict" )
+                .build();
+        response.addHeader( HttpHeaders.SET_COOKIE, cookieSessionID.toString() );
+        response.addHeader( HttpHeaders.SET_COOKIE, cookieName.toString() );
+        response.addHeader( HttpHeaders.SET_COOKIE, cookieType.toString() );
         return new ResponseEntity( HttpStatus.OK );
     }
 }
