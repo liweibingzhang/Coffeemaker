@@ -9,7 +9,7 @@
 		/* Without these comments, Thymeleaf will try to parse the Javascript as XML and break itself sometimes */
 		/*<![CDATA[*/ 
 		var app = angular.module('myApp', []);
-		app.controller('signup', function($scope, $http, $q) {
+		app.controller('signup', function($scope,$window, $http, $q) {
 			$scope.userTypes = [
 				{value: 1, display: 'Customer'},
 				{value: 2, display: 'Staff'}
@@ -29,7 +29,12 @@
 				}
 				else {
 					$http.post("/api/v1/user", newUser).then(function(response) { 
-						alert("Account: " + newUser.username + " created!");
+						if (newUser.type == "Customer") {
+							$window.location.href = "/login";
+						}
+						else {
+							
+						}
 					}).catch(function(response) {
 						alert(response.data.message);
 					});
