@@ -3,17 +3,31 @@
 <head>
 <title>Welcome to CoffeeMaker</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script> 
 </head>
-<script
-	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
 <body>
-	<h1>Coffee Maker</h1>
-	<h2>Available Options</h2>
-	<ul>
-		<li><a href="sendorder.html">Send a Order</a></li>
-		<li><a href="vieworder.html">View/Pick up Order</a></li>
-		<br></br>
-		<button type="button">Log out</button> 
-	</ul>
+	<script>
+		/*<![CDATA[*/
+		var app = angular.module('myApp', []);
+		app.controller('customer', function($scope, $http, $window) {
+			$scope.logout = function() {
+				fetch("/api/v1/user/logout").then(() => $window.location.href = "/")
+					.catch(e => $window.location.href = "/"); 
+			}
+		});
+		/*]]>*/
+	</script>
+	
+	
+	<div ng-app="myApp" ng-controller="customer">
+		<h1>Coffee Maker</h1>
+		<h2>Available Options</h2>
+		<ul>
+			<li><a href="sendorder.html">Send a Order</a></li>
+			<li><a href="vieworder.html">View/Pick up Order</a></li>
+			<br></br>
+			<button type="button" ng-click="logout()">Log out</button> 
+		</ul>
+	</div> 
 </body>
 </html> 

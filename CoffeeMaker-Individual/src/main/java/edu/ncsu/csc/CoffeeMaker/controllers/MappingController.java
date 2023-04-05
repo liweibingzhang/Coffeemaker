@@ -59,6 +59,7 @@ public class MappingController {
 
             if ( sessionId != null && type != null && username != null ) {
                 final CoffeemakerUser user = service.findByName( username.getValue() );
+                System.out.println( "At the endpoint this is: " + user.compareSessionId( sessionId.getValue() ) );
                 if ( user != null && user.compareSessionId( sessionId.getValue() ) ) {
                     final String typeStr = type.getValue();
                     return typeStr.equals( "Staff" ) ? "staff" : "customer";
