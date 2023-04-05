@@ -194,7 +194,7 @@ public class CoffeemakerUser extends DomainObject {
     public void setPasswordHash ( final String password ) {
         final byte[] bytes = new byte[16];
         random.nextBytes( bytes );
-        salt = bytes.toString();
+        salt = toHexString( bytes );
         this.passwordHash = toHexString( getSHA( password + salt ) );
     }
 
