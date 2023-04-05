@@ -31,7 +31,7 @@
 					$http.post("/api/v1/user", newUser).then(function(response) { 
 						alert("Account: " + newUser.username + " created!");
 					}).catch(function(response) {
-						console.log(response);
+						alert(response.data.message);
 					});
 				}
 			}
@@ -42,6 +42,7 @@
 	<div ng-app="myApp" ng-controller="signup">
 	<h2>Sign up</h2>
 	<div class="formcontainer">
+	<form ng-submit="signup()" name="accountForm" class="form-horizontal">
 		<div class="row">
 			<div class="form-group col-md-12">
 				<label class="col-md-2 control-lable" for="file">Username : </label>
@@ -76,8 +77,9 @@
 		</div>
 		<div>
 			<br>
-			<button type="button" ng-click="signup()"class="btn btn-danger" ng-disabled="addInventoryForm.$pristine">Sign Up</button>
+			<input type="submit" value="Sign Up" class="btn btn-primary btn-sm" ng-disabled="addInventoryForm.$invalid" />
 		</div>
+	</form>
 	</div>
     </div>
 </body>
