@@ -30,7 +30,10 @@ input.ng-dirty.ng-invalid-min {
 		/*<![CDATA[*/
 		var app = angular.module('myApp', []);
 		app.controller('loginPage', function($scope, $http) {
-			
+			$scope.goToSignup = function() {
+				console.log("we pressed")
+				window.location = '/signup'; 
+			}
 		});
 		/*]]>*/
 	</script>
@@ -52,7 +55,7 @@ input.ng-dirty.ng-invalid-min {
 			    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
 		  </div>
           <button type="submit" class="btn btn-primary">Login</button>
-		  <button class="btn btn-primary">Sign up</button>
+		  <button id="signupButton" class="btn btn-primary" ng-click="goToSignup()">Sign up</button>
         </div>
 		</form>
 	</div>
