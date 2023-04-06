@@ -40,7 +40,9 @@ public class APIUserController extends APIController {
     @Autowired
     private UserService          service;
 
-    /* Boolean to use secure cookies */
+    /*
+     * Boolean to use secure cookies
+     */
     private static final boolean USE_SECURE_COOKIES = true;
 
     /**
