@@ -107,7 +107,7 @@ public class APIUserTest {
         userDetails.put( "username", "user" );
         userDetails.put( "password", "pass" );
 
-        final MvcResult result = mvc.perform( get( "/api/v1/user/login" ).contentType( MediaType.APPLICATION_JSON )
+        final MvcResult result = mvc.perform( post( "/api/v1/user/login" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( userDetails ) ) ).andExpect( status().isOk() ).andReturn();
 
         final String id = result.getResponse().getCookie( "sessionid" ).getValue();
@@ -126,12 +126,12 @@ public class APIUserTest {
         userDetails.put( "password", "pasz" );
         userDetails.remove( "sessionid" );
 
-        mvc.perform( get( "/api/v1/user/login" ).contentType( MediaType.APPLICATION_JSON )
+        mvc.perform( post( "/api/v1/user/login" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( userDetails ) ) ).andExpect( status().isUnauthorized() );
 
         userDetails.put( "username", "funny" );
         userDetails.put( "password", "funny" );
-        mvc.perform( get( "/api/v1/user/login" ).contentType( MediaType.APPLICATION_JSON )
+        mvc.perform( post( "/api/v1/user/login" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( userDetails ) ) ).andExpect( status().isNotFound() );
         final Cookie funnyCookie = result.getResponse().getCookie( "username" );
         funnyCookie.setValue( "funny" );

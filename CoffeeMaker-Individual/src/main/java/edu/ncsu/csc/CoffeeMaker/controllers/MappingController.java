@@ -1,8 +1,14 @@
 package edu.ncsu.csc.CoffeeMaker.controllers;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import edu.ncsu.csc.CoffeeMaker.models.CoffeemakerUser;
+import edu.ncsu.csc.CoffeeMaker.services.UserService;
 
 /**
  * Controller class for the URL mappings for CoffeeMaker. The controller returns
@@ -15,6 +21,59 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class MappingController {
 
     /**
+     * UserService object, to be autowired in by Spring to allow for
+     * manipulating the User model
+     */
+    @Autowired
+    private UserService service;
+
+    /**
+     * On a GET request to /index, the IndexController will return
+     * /src/main/resources/templates/index.html.
+     *
+     * @param request
+     *            request that we recieved from the client
+     * @param model
+     *            underlying UI model
+     * @return contents of the page
+     */
+    @GetMapping ( { "/", "/login.html" } )
+    public String login ( final Model model, final HttpServletRequest request ) {
+        final javax.servlet.http.Cookie[] cookies = request.getCookies();
+        if ( cookies != null ) {
+            // grab the session id
+            javax.servlet.http.Cookie sessionId = null;
+            javax.servlet.http.Cookie type = null;
+            javax.servlet.http.Cookie username = null;
+            for ( final javax.servlet.http.Cookie cookie : cookies ) {
+                if ( cookie.getName().equals( "sessionid" ) ) {
+                    sessionId = cookie;
+                }
+
+                else if ( cookie.getName().equals( "type" ) ) {
+                    type = cookie;
+                }
+
+                else if ( cookie.getName().equals( "username" ) ) {
+                    username = cookie;
+                }
+            }
+
+            if ( sessionId != null && type != null && username != null ) {
+                final CoffeemakerUser user = service.findByName( username.getValue() );
+                if ( user != null && user.compareSessionId( sessionId.getValue() ) ) {
+                    System.out.println( "At the endpoint this is: " + user.compareSessionId( sessionId.getValue() ) );
+                    final String typeStr = type.getValue();
+                    return "Staff".equals( typeStr ) ? "staff" : "customer";
+                }
+            }
+
+        }
+
+        return "login";
+    }
+
+    /**
      * On a GET request to /index, the IndexController will return
      * /src/main/resources/templates/index.html.
      *
@@ -22,9 +81,9 @@ public class MappingController {
      *            underlying UI model
      * @return contents of the page
      */
-    @GetMapping ( { "/", "/login.html" } )
+    @GetMapping ( { "/index", "/index.html" } )
     public String index ( final Model model ) {
-        return "login";
+        return "index";
     }
 
     /**
@@ -119,9 +178,10 @@ public class MappingController {
     public String signupPage ( final Model model ) {
         return "signup";
     }
+
     /**
-     * On a GET request to staff, the StaffController will
-     * return /src/main/resources/templates/staff.html.
+     * On a GET request to staff, the StaffController will return
+     * /src/main/resources/templates/staff.html.
      *
      * @param model
      *            underlying UI model
@@ -130,5 +190,18 @@ public class MappingController {
     @GetMapping ( { "/staff", "/staff.html" } )
     public String staffForm ( final Model model ) {
         return "staff";
+    }
+
+    /**
+     * On a GET request to staff, the CustomerController will return
+     * /src/main/resources/templates/customer.html.
+     *
+     * @param model
+     *            underlying UI model
+     * @return contents of the page
+     */
+    @GetMapping ( { "/customer", "/customer.html" } )
+    public String customer ( final Model model ) {
+        return "customer";
     }
 }

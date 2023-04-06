@@ -21,7 +21,6 @@
 			
 			$scope.signup = function () {
 				let newUser = {username: $scope.username, password: $scope.password, type: $scope.userType.display};
-				console.log(newUser);
 				if ($scope.password != $scope.passwordConfirm) {
 					alert("Passwords Do Not Match.");
 					console.log($scope.password);
@@ -30,10 +29,10 @@
 				else {
 					$http.post("/api/v1/user", newUser).then(function(response) { 
 						if (newUser.type == "Customer") {
-							$window.location.href = "/login";
+							$window.location.href = "/customer";
 						}
 						else {
-							
+							$window.location.href = "/staff"; 
 						}
 					}).catch(function(response) {
 						alert(response.data.message);
