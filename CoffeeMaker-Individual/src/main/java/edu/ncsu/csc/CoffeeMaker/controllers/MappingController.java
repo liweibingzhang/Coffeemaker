@@ -47,8 +47,9 @@ public class MappingController {
      */
     @GetMapping ( { "/", "/login.html" } )
     public String login ( final Model model, final HttpServletRequest request,
-            @CookieValue ( "username" ) final String username, @CookieValue ( "sessionid" ) final String sessionid,
-            @CookieValue ( "type" ) final String type ) {
+            @CookieValue ( name = "username", required = false ) final String username,
+            @CookieValue ( name = "sessionid", required = false ) final String sessionid,
+            @CookieValue ( name = "type", required = false ) final String type ) {
         if ( sessionid != null && type != null && username != null ) {
             final CoffeemakerUser user = service.findByName( username );
             if ( user != null && user.compareSessionId( sessionid ) ) {
@@ -179,8 +180,10 @@ public class MappingController {
      * @return contents of the page
      */
     @GetMapping ( { "/staff", "/staff.html" } )
-    public String staffForm ( final Model model, @CookieValue ( "username" ) final String username,
-            @CookieValue ( "sessionid" ) final String sessionid, @CookieValue ( "type" ) final String type ) {
+    public String staffForm ( final Model model,
+            @CookieValue ( name = "username", required = false ) final String username,
+            @CookieValue ( name = "sessionid", required = false ) final String sessionid,
+            @CookieValue ( name = "type", required = false ) final String type ) {
         if ( sessionid != null && type != null && username != null ) {
             final CoffeemakerUser user = service.findByName( username );
             if ( user != null && user.compareSessionId( sessionid )
@@ -207,8 +210,10 @@ public class MappingController {
      * @return contents of the page
      */
     @GetMapping ( { "/customer", "/customer.html" } )
-    public String customer ( final Model model, @CookieValue ( "username" ) final String username,
-            @CookieValue ( "sessionid" ) final String sessionid, @CookieValue ( "type" ) final String type ) {
+    public String customer ( final Model model,
+            @CookieValue ( name = "username", required = false ) final String username,
+            @CookieValue ( name = "sessionid", required = false ) final String sessionid,
+            @CookieValue ( name = "type", required = false ) final String type ) {
         if ( sessionid != null && type != null && username != null ) {
             final CoffeemakerUser user = service.findByName( username );
             if ( user != null && user.compareSessionId( sessionid ) ) {
