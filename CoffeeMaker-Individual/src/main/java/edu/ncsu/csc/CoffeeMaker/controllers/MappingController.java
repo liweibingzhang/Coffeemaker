@@ -30,33 +30,48 @@ public class MappingController {
     private UserService service;
 
     /**
-     * On a GET request to /index, the IndexController will return
-     * /src/main/resources/templates/index.html.
-     *
-     * @param request
-     *            request that we recieved from the client
-     * @param model
-     *            underlying UI model
-     * @param username
-     *            Username
-     * @param sessionid
-     *            Session ID for user
-     * @param type
-     *            User type
-     * @return contents of the page
-     */
-    @GetMapping ( { "/", "/login.html" } )
-    public String login ( final Model model, final HttpServletRequest request,
-            @CookieValue ( "username" ) final String username, @CookieValue ( "sessionid" ) final String sessionid,
-            @CookieValue ( "type" ) final String type ) {
-        if ( sessionid != null && type != null && username != null ) {
-            final CoffeemakerUser user = service.findByName( username );
-            if ( user != null && user.compareSessionId( sessionid ) ) {
-                return user.getUserType() == CoffeemakerUserType.Staff ? "staff" : "customer";
-            }
-        }
-        return "login";
-    }
+    * On a GET request to /index, the IndexController will return
+    * /src/main/resources/templates/index.html.
+    *
+    * @param model
+    *            underlying UI model
+    * @return contents of the page
+    */
+   @GetMapping ( { "/", "/login.html" } )
+   public String login ( final Model model, final HttpServletRequest request ) {
+       final javax.servlet.http.Cookie[] cookies = request.getCookies();
+       if ( cookies != null ) {
+           // grab the session id
+           javax.servlet.http.Cookie sessionId = null;
+           javax.servlet.http.Cookie type = null;
+           javax.servlet.http.Cookie username = null;
+           for ( final javax.servlet.http.Cookie cookie : cookies ) {
+               if ( cookie.getName().equals( "sessionid" ) ) {
+                   sessionId = cookie;
+               }
+
+               else if ( cookie.getName().equals( "type" ) ) {
+                   type = cookie;
+               }
+
+               else if ( cookie.getName().equals( "username" ) ) {
+                   username = cookie;
+               }
+           }
+
+           if ( sessionId != null && type != null && username != null ) {
+               final CoffeemakerUser user = service.findByName( username.getValue() );
+               if ( user != null && user.compareSessionId( sessionId.getValue() ) ) {
+                   
+                   final String typeStr = type.getValue();
+                   return typeStr.equals( "Staff" ) ? "staff" : "customer";
+               }
+           }
+
+       }
+
+       return "login";
+   }
 
     /**
      * On a GET request to /index, the IndexController will return
