@@ -32,7 +32,7 @@ public class MappingController {
      * /src/main/resources/templates/index.html.
      *
      * @param request
-     *            - request that we recieved from the client
+     *            request that we recieved from the client
      * @param model
      *            underlying UI model
      * @return contents of the page
