@@ -103,8 +103,6 @@ public class APIUserController extends APIController {
         if ( user == null ) {
             return new ResponseEntity( errorResponse( "Username incorrect" ), HttpStatus.NOT_FOUND );
         }
-        System.out.println( "The session id would be in endpoint 2" + sessionid );
-        System.out.println( "At the endpoint 2: " + user.compareSessionId( sessionid ) );
         if ( user.compareSessionId( sessionid ) ) {
             user.logout();
             service.save( user );
