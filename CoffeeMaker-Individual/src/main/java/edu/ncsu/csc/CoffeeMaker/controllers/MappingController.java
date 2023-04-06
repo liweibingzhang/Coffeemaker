@@ -37,6 +37,12 @@ public class MappingController {
      *            request that we recieved from the client
      * @param model
      *            underlying UI model
+     * @param username
+     *            Username
+     * @param sessionid
+     *            Session ID for user
+     * @param type
+     *            User type
      * @return contents of the page
      */
     @GetMapping ( { "/", "/login.html" } )
@@ -164,6 +170,12 @@ public class MappingController {
      *
      * @param model
      *            underlying UI model
+     * @param username
+     *            Username
+     * @param sessionid
+     *            Session ID for user
+     * @param type
+     *            User type
      * @return contents of the page
      */
     @GetMapping ( { "/staff", "/staff.html" } )
@@ -185,6 +197,13 @@ public class MappingController {
      *
      * @param model
      *            underlying UI model
+     *
+     * @param username
+     *            Username
+     * @param sessionid
+     *            Session ID for user
+     * @param type
+     *            User type
      * @return contents of the page
      */
     @GetMapping ( { "/customer", "/customer.html" } )
