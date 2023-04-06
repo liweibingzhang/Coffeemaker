@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Login</title>
+<link rel="stylesheet" href="/css/bootstrap.css" />
+<link rel="stylesheet" href="/css/app.css" />
+<style>
+
+</style>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+</head>
+
+<body>
+	<script>
+		/*<![CDATA[*/
+		var app = angular.module('myApp', []);
+		app.controller('loginPage', function($scope, $http, $window) {
+			$scope.login = function() {
+				if($scope.myForm.$invalid){
+					alert("Please fill out form"); 
+					return; 
+				}
+				
+				const user = {username : $scope.username, password : $scope.password}; 
+				$http.post("/api/v1/user/login", user)
+					.then(response => {
+						if(response.data == "Customer"){
+							$window.location.href = "/customer";
+						}
+						
+						else {
+							$window.location.href = "/staff";
+						}
+					})
+					.catch(e => alert("Wrong Username or Password! Try again!"))
+				
+			}
+			
+			$scope.goToSignup = function() {
+				window.location = '/signup'; 
+			}
+		});
+		/*]]>*/
+	</script>
+
+	<div ng-app="myApp" ng-controller="loginPage as login">
+        <form name="myForm">
+        <h1>Login to CoffeeMaker</h1>
+        <!---- Found implementation here https://getbootstrap.com/docs/4.0/components/forms/ ---->
+        <div>
+        	<div class="form-group">
+			    <label for="exampleInputEmail1">Username</label>
+			    <input ng-model="username" type="text"  id="exampleInputUsername" aria-describedby="emailHelp" placeholder="Enter Username" required>
+		  </div>
+		  <div class="form-group">
+			    <label for="exampleInputPassword1">Password</label>
+			    <input ng-model="password" type="password" id="exampleInputPassword1" placeholder="Password" required>
+		  </div>
+          <button ng-click="login()" class="btn btn-primary">Login</button>
+		  <button id="signupButton" class="btn btn-primary" ng-click="goToSignup()">Sign up</button>
+        </div>
+		</form>
+	</div>
+</body>
+</html>
