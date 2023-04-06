@@ -11,7 +11,8 @@
 		var app = angular.module('myApp', []);
 		app.controller('staff', function($scope, $http, $window) {
 			$scope.logout = function() {
-				fetch("/api/v1/user/logout").then(() => $window.location.href = "/"); 
+				$http.get("/api/v1/user/logout").then(() => $window.location.href = "/")
+					.catch(e => $window.location.href = "/"); 
 			}
 		});
 		/*]]>*/

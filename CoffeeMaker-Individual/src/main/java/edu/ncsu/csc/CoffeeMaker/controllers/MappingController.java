@@ -5,9 +5,11 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import edu.ncsu.csc.CoffeeMaker.models.CoffeemakerUser;
+import edu.ncsu.csc.CoffeeMaker.models.enums.CoffeemakerUserType;
 import edu.ncsu.csc.CoffeeMaker.services.UserService;
 
 /**
@@ -35,41 +37,24 @@ public class MappingController {
      *            request that we recieved from the client
      * @param model
      *            underlying UI model
+     * @param username
+     *            Username
+     * @param sessionid
+     *            Session ID for user
+     * @param type
+     *            User type
      * @return contents of the page
      */
     @GetMapping ( { "/", "/login.html" } )
-    public String login ( final Model model, final HttpServletRequest request ) {
-        final javax.servlet.http.Cookie[] cookies = request.getCookies();
-        if ( cookies != null ) {
-            // grab the session id
-            javax.servlet.http.Cookie sessionId = null;
-            javax.servlet.http.Cookie type = null;
-            javax.servlet.http.Cookie username = null;
-            for ( final javax.servlet.http.Cookie cookie : cookies ) {
-                if ( cookie.getName().equals( "sessionid" ) ) {
-                    sessionId = cookie;
-                }
-
-                else if ( cookie.getName().equals( "type" ) ) {
-                    type = cookie;
-                }
-
-                else if ( cookie.getName().equals( "username" ) ) {
-                    username = cookie;
-                }
+    public String login ( final Model model, final HttpServletRequest request,
+            @CookieValue ( "username" ) final String username, @CookieValue ( "sessionid" ) final String sessionid,
+            @CookieValue ( "type" ) final String type ) {
+        if ( sessionid != null && type != null && username != null ) {
+            final CoffeemakerUser user = service.findByName( username );
+            if ( user != null && user.compareSessionId( sessionid ) ) {
+                return user.getUserType() == CoffeemakerUserType.Staff ? "staff" : "customer";
             }
-
-            if ( sessionId != null && type != null && username != null ) {
-                final CoffeemakerUser user = service.findByName( username.getValue() );
-                if ( user != null && user.compareSessionId( sessionId.getValue() ) ) {
-                    System.out.println( "At the endpoint this is: " + user.compareSessionId( sessionId.getValue() ) );
-                    final String typeStr = type.getValue();
-                    return "Staff".equals( typeStr ) ? "staff" : "customer";
-                }
-            }
-
         }
-
         return "login";
     }
 
@@ -185,11 +170,25 @@ public class MappingController {
      *
      * @param model
      *            underlying UI model
+     * @param username
+     *            Username
+     * @param sessionid
+     *            Session ID for user
+     * @param type
+     *            User type
      * @return contents of the page
      */
     @GetMapping ( { "/staff", "/staff.html" } )
-    public String staffForm ( final Model model ) {
-        return "staff";
+    public String staffForm ( final Model model, @CookieValue ( "username" ) final String username,
+            @CookieValue ( "sessionid" ) final String sessionid, @CookieValue ( "type" ) final String type ) {
+        if ( sessionid != null && type != null && username != null ) {
+            final CoffeemakerUser user = service.findByName( username );
+            if ( user != null && user.compareSessionId( sessionid )
+                    && user.getUserType() == CoffeemakerUserType.Staff ) {
+                return "staff";
+            }
+        }
+        return "login";
     }
 
     /**
@@ -198,10 +197,24 @@ public class MappingController {
      *
      * @param model
      *            underlying UI model
+     *
+     * @param username
+     *            Username
+     * @param sessionid
+     *            Session ID for user
+     * @param type
+     *            User type
      * @return contents of the page
      */
     @GetMapping ( { "/customer", "/customer.html" } )
-    public String customer ( final Model model ) {
-        return "customer";
+    public String customer ( final Model model, @CookieValue ( "username" ) final String username,
+            @CookieValue ( "sessionid" ) final String sessionid, @CookieValue ( "type" ) final String type ) {
+        if ( sessionid != null && type != null && username != null ) {
+            final CoffeemakerUser user = service.findByName( username );
+            if ( user != null && user.compareSessionId( sessionid ) ) {
+                return "customer";
+            }
+        }
+        return "login";
     }
 }
