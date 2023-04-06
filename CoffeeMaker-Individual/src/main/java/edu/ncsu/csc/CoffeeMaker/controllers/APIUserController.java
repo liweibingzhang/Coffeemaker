@@ -40,6 +40,7 @@ public class APIUserController extends APIController {
     @Autowired
     private UserService          service;
 
+    /* Boolean to use secure cookies */
     private static final boolean USE_SECURE_COOKIES = true;
 
     /**
@@ -48,6 +49,8 @@ public class APIUserController extends APIController {
      *
      * @param json
      *            Json of user to login (username, password)
+     * @param response
+     *            - response to give back to the server
      *
      * @return response to the request
      */

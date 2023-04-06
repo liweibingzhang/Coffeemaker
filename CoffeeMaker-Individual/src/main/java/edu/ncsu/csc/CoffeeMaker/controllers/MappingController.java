@@ -31,6 +31,8 @@ public class MappingController {
      * On a GET request to /index, the IndexController will return
      * /src/main/resources/templates/index.html.
      *
+     * @param request
+     *            - request that we recieved from the client
      * @param model
      *            underlying UI model
      * @return contents of the page
@@ -62,7 +64,7 @@ public class MappingController {
                 if ( user != null && user.compareSessionId( sessionId.getValue() ) ) {
                     System.out.println( "At the endpoint this is: " + user.compareSessionId( sessionId.getValue() ) );
                     final String typeStr = type.getValue();
-                    return typeStr.equals( "Staff" ) ? "staff" : "customer";
+                    return "Staff".equals( typeStr ) ? "staff" : "customer";
                 }
             }
 
