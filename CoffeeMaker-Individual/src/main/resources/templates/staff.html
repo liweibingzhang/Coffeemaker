@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Welcome to the CSC326 CoffeeMaker</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+</head>
+<body>
+	<script>
+		/*<![CDATA[*/
+		var app = angular.module('myApp', []);
+		app.controller('staff', function($scope, $http, $window) {
+			$scope.logout = function() {
+				$http.get("/api/v1/user/logout").then(() => $window.location.href = "/")
+					.catch(e => $window.location.href = "/"); 
+			}
+		});
+		/*]]>*/
+	</script>
+	
+	<div ng-app="myApp" ng-controller="staff">
+		<h1>Coffee Maker</h1>
+		<h2>Available Options</h2>
+		<ul>
+			<li><a href="recipe.html">Create Recipe</a></li>
+			<li><a href="editrecipe.html">Edit Recipe</a></li>
+			<li><a href="deleterecipe.html">Delete Recipe</a></li>
+			<li><a href="addingredients.html">Create Ingredient</a></li>
+			<li><a href="inventory.html">Update Ingredient</a></li>
+			<li><a href="makecoffee.html">Fulfill order</a></li>
+			<button type="button" ng-click="logout()">Log out</button>
+		</ul>
+	</div>
+	 
+</body>
+</html>
