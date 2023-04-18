@@ -9,7 +9,7 @@
 	<script>
 		/*<![CDATA[*/
 		var app = angular.module('myApp', []);
-		app.controller('fulfill', function($scope, $http, $window) {
+		app.controller('history', function($scope, $http, $window) {
 			$scope.orders = [
 				{value: 1, display: 'Customer'},
 				{value: 2, display: 'Staff'}
@@ -20,7 +20,7 @@
 	</script>
 	
 	<div ng-app="myApp" ng-controller="fulfill">
-		<h1>View/Fulfill Orders</h1>
+		<h1>History of Orders</h1>
 		<div class="row">
 			<div class="col-sm">
 				Select Orders: <br />
