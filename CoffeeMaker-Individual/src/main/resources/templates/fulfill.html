@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Welcome to the CSC326 CoffeeMaker</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+</head>
+<body>
+	<script>
+		/*<![CDATA[*/
+		var app = angular.module('myApp', []);
+		app.controller('fulfill', function($scope, $http, $window) {
+			$scope.orders = [
+				{value: 1, display: 'Customer'},
+				{value: 2, display: 'Staff'}
+			];
+			
+		});
+		/*]]>*/
+	</script>
+	
+	<div ng-app="myApp" ng-controller="fulfill">
+		<h1>View/Fulfill Orders</h1>
+		<div class="row">
+			<div class="col-sm">
+				Select Orders: <br />
+				<select ng-model="orders" ng-options="item as item.display for item in orders" required="true">
+					<option value="">Select Orders</option>
+				</select>
+				<table>
+					<tr ng-repeat="order in orders">
+					  <td ng-repeat="display in order">{{display}} </td> 
+					</tr>
+				</table> 
+				<h2>
+				    <a href="staff.html">
+						<button>Home</button>
+					</a>
+			  </h2>
+			</div>
+		</div>
+	</div>
+	 
+</body>
+</html>
