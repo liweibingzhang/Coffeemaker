@@ -166,6 +166,19 @@ public class MappingController {
     }
 
     /**
+     * On a GET request to /signup, the APIUserController will return
+     * /src/main/resources/templates/signups.html.
+     *
+     * @param model
+     *            underlying UI model
+     * @return contents of the page
+     */
+    @GetMapping ( { "/sendorder", "/sendorder.html" } )
+    public String sendOrderPage ( final Model model ) {
+        return "sendorder";
+    }
+
+    /**
      * On a GET request to staff, the StaffController will return
      * /src/main/resources/templates/staff.html.
      *

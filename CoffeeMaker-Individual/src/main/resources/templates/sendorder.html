@@ -1,21 +1,169 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<title>Send an order</title>
+<title>Place Order</title>
+<style>
+		input.ng-valid {
+			background-color: lightgreen;
+		}
+
+		input.ng-dirty.ng-invalid-required, input.ng-dirty.ng-invalid-number {
+			background-color: red;
+		}
+
+		input.ng-dirty.ng-invalid-min {
+			background-color: yellow;
+		}
+	</style>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" href="css/bootstrap.css" />
+<link rel="stylesheet" href="css/app.css" />
 </head>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
 <body>
-	
-	<h2>Make an order to send by filling out below</h2>
-	<ul>
-		<li></li>
-		<li>Order details</li>
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+
+		var app = angular.module('myApp', []);
+		app.controller('sendOrder', function($scope, $http, $q) {
+			$scope.totalCost = 0;
+			
+			$scope.order = {
+				recipes: [{recipe: '', count: ''}]
+			};
+			
+			$scope.recipeNames = {
+					names: []
+				};
+			
+			$scope.getRecipes = function() {
+	        	$http.get("/api/v1/recipes").then(function(response) {
+	        		$scope.recipes = response.data;
+	        		console.log($scope.recipes);
+	        	});
+        	}
+			
+			$scope.calcCost = function() {
+				let cost = 0;
+				for (let i = 0; i < $scope.order.recipes.length; i++) {
+					if ($scope.order.recipes.at(i).count)
+						cost += $scope.order.recipes.at(i).recipe.price * $scope.order.recipes.at(i).count;
+				}
+				$scope.totalCost = cost;
+			}
+			
+			$scope.pay = function() {
+				if ($scope.payment >= $scope.totalCost) {
+					
+					let map = new Map([]);
+					for (let i = 0; i < $scope.order.recipes.length; i++) {
+						map.set($scope.recipeNames.names.at(i), $scope.order.recipes.at(i).count)
+					}
+					map = Object.fromEntries(map)
+					console.log(map)
+					$http.put("/api/v1/order", map).then(function(response) {
+		        		console.log(response);
+		        	});
+				}
+				else {
+					alert("Please play the required amount!!");
+				}
+			}
+			
+			$scope.getRecipe = function(idx) {
+				let name = $scope.recipeNames.names[idx]
+				console.log(name);
+				$http.get("/api/v1/recipes/" + name).then(function(response) {
+	        		let r = response.data;
+	        		$scope.order.recipes[idx].recipe = r;
+	        		$scope.calcCost();
+	        	});
+				console.log($scope.order);
+			}
+			
+			$scope.removeRecipe = function (idx) {
+				if (idx != 0) {
+					$scope.order.recipes.splice(idx, 1);
+					$scope.recipeNames.names.splice(idx, 1);
+				}
+				$scope.calcCost();
+			}
+			
+			$scope.addRecipe = function() {
+				$scope.order.recipes.push({recipe: '', count: ''});
+			}
+			
+			$scope.getRecipes();
+		});
 		
-	</ul>
-	<h2>
-	    <a href="customer.html">
-			<button>Home</button>
-		</a>
-	 </h2>
+		/*]]>*/
+	</script>
+	<div ng-app="myApp" ng-controller="sendOrder">
+		<div class="panel panel-default">
+		<div class="panel-heading">
+			<span class="lead">Place Order</span>
+		</div>
+
+		<div class="formcontainer">
+			<form ng-submit="submit()" name="addOrderForm" ng-model="addOrderForm" class="form-horizontal">
+				<div class="row">
+					<div class="form-group col-md-12">
+						<div class="col-md-2"></div>
+						<div class="col-md-10"><label>Items</label></div>
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="form-group col-md-12" ng-repeat="recipe in order.recipes">
+						<select name="{{ $index }}" class="form-control"
+									ng-model="recipeNames.names[$index]"
+									ng-change="getRecipe($index)"
+									ng-options="item.name as item.name for item in recipes" required="true">
+						<option value="">Choose</option>
+						</select>
+						
+						<input type="number" ng-model="order.recipes[$index].count"
+								   class="form-control input-sm" ng-change="calcCost()" placeholder="Enter amount" required="0" min="0"/>
+						<div class="has-error" ng-show="addRecipeForm.$dirty"></div>
+						
+						<div class="col-md-0">
+							<button type="button" name="add" class="btn btn-danger"
+									ng-click="addRecipe()">+
+							</button>
+							
+							<button type="button" name="remove" class="btn btn-primary"
+									ng-click="removeRecipe($index)">-
+							</button>
+						</div>
+						
+					</div>
+				</div>
+				
+				<div class="row">
+					Total Cost: {{totalCost}}
+				</div>
+				
+				<div class="row">
+					<label>Enter Payment: </label>
+					<input type="number" ng-model="payment"
+						class="form-control input-sm" placeholder="Enter amount" required="0" min="0"/>
+				</div>
+				
+				<div class="row">
+					<div class="form-actions floatRight">
+						<input type="submit" value="Submit" ng-click="pay()"
+							   class="btn btn-primary btn-sm"/>
+						<button type="button" ng-click="reset()"
+								class="btn btn-warning btn-sm"
+								ng-disabled="addRecipeForm.$pristine">Reset Form
+						</button>
+					</div>
+				</div>
+				
+			</form>
+		</div>
+		</div>
+	</div>
 </body>
 </html>
