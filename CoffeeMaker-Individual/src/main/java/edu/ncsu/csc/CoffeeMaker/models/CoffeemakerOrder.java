@@ -51,12 +51,20 @@ public class CoffeemakerOrder extends DomainObject {
         this.id = id;
     }
 
-    public String getUser () {
+    public String getUsername () {
         return name;
     }
 
     public Map<String, Integer> getRecipes () {
         return recipes;
+    }
+
+    public boolean isFullfilled () {
+        return fullfilled;
+    }
+
+    public boolean isPickedUp () {
+        return pickedUp;
     }
 
     public void create ( final String username ) {
@@ -84,5 +92,9 @@ public class CoffeemakerOrder extends DomainObject {
             return pickedUp = true;
         }
 
+    }
+
+    public long getCreationTime () {
+        return creationTime;
     }
 }

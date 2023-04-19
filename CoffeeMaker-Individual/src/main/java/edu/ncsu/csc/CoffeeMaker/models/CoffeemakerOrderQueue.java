@@ -16,7 +16,7 @@ public class CoffeemakerOrderQueue extends DomainObject {
     @GeneratedValue
     private Long           id;
 
-    @OneToMany ( cascade = CascadeType.ALL, fetch = FetchType.EAGER )
+    @OneToMany ( cascade = CascadeType.MERGE, fetch = FetchType.EAGER )
     List<CoffeemakerOrder> orderQueue;
 
     public CoffeemakerOrderQueue () {

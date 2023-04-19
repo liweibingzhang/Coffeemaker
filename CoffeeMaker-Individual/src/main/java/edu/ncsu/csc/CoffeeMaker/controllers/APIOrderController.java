@@ -84,7 +84,7 @@ public class APIOrderController extends APIController {
             else {
                 orderList = new ArrayList<CoffeemakerOrder>();
                 for ( final CoffeemakerOrder order : orderQueueService.getOrderQueue().getOrders() ) {
-                    if ( order.getUser().equals( user.getName() ) ) {
+                    if ( order.getUsername().equals( user.getName() ) ) {
                         orderList.add( order );
                     }
                 }
@@ -155,7 +155,7 @@ public class APIOrderController extends APIController {
             return new ResponseEntity( errorResponse( "Invalid permissions" ), HttpStatus.UNAUTHORIZED );
         }
         final CoffeemakerOrder order = orderService.findById( id.get( "id" ) );
-        if ( !order.getUser().equals( user.getName() ) ) {
+        if ( !order.getUsername().equals( user.getName() ) ) {
             return new ResponseEntity( errorResponse( "Invalid permissions" ), HttpStatus.UNAUTHORIZED );
         }
         order.pickup();
