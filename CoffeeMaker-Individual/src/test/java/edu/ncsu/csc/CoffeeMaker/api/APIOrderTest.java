@@ -81,9 +81,6 @@ public class APIOrderTest {
         ingredientA = new Ingredient( "A", 2 );
         ingredientB = new Ingredient( "B", 2 );
         ingredientC = new Ingredient( "C", 2 );
-        ingService.save( ingredientA );
-        ingService.save( ingredientB );
-        ingService.save( ingredientC );
         iService.getInventory().addIngredient( "A", 10 );
         iService.getInventory().addIngredient( "B", 10 );
         iService.getInventory().addIngredient( "C", 10 );
