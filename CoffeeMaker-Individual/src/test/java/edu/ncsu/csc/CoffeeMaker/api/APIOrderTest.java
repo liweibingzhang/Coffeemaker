@@ -147,7 +147,7 @@ public class APIOrderTest {
                 .andExpect( status().isOk() );
         assertEquals( 1, qService.getOrderQueue().getOrders().size() );
 
-        assertEquals( "customer", qService.getOrderQueue().getOrders().get( 0 ).getUser() );
+        assertEquals( "customer", qService.getOrderQueue().getOrders().get( 0 ).getUsername() );
     }
 
     @Test
@@ -180,7 +180,8 @@ public class APIOrderTest {
                 .andExpect( status().isOk() ).andReturn();
         final String staffResultString = staffResult.getResponse().getContentAsString();
         final String[] staffResultParsed = staffResultString.split( "," );
-        assertEquals( 8, staffResultParsed.length );
+        assertEquals( 14, staffResultParsed.length );
+        System.out.println( staffResultString );
 
         final MvcResult customerResult = mvc
                 .perform( get( "/api/v1/order" ).contentType( MediaType.APPLICATION_JSON ).cookie(
@@ -189,7 +190,7 @@ public class APIOrderTest {
                 .andExpect( status().isOk() ).andReturn();
         final String customerResultString = customerResult.getResponse().getContentAsString();
         final String[] customerResultParsed = customerResultString.split( "," );
-        assertEquals( 4, customerResultParsed.length );
+        assertEquals( 7, customerResultParsed.length );
     }
 
     @Test
