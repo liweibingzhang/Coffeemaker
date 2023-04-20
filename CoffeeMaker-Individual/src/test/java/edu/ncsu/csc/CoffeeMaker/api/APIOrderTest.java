@@ -14,6 +14,7 @@ import java.util.TreeMap;
 import javax.servlet.http.Cookie;
 import javax.transaction.Transactional;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -238,5 +239,7 @@ public class APIOrderTest {
                 .cookie( new Cookie( "sessionid", customerDetails.get( "sessionid" ) ),
                         new Cookie( "username", customerDetails.get( "username" ) ) ) )
                 .andExpect( status().isOk() );
+        // assertions.assertTrue(oService.findById( id ).isPickedUp());
+        Assertions.assertTrue( oService.findById( id ).isPickedUp() );
     }
 }

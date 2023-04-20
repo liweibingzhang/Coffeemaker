@@ -76,20 +76,23 @@ public class CoffeemakerOrder extends DomainObject {
 
     public boolean fullfil () {
         if ( fullfilled ) {
-            return false;
+            return fullfilled;
         }
+
         else {
-            return fullfilled = true;
+            fullfilled = true;
+            return fullfilled;
         }
 
     }
 
     public boolean pickup () {
         if ( pickedUp ) {
-            return false;
+            return pickedUp;
         }
         else {
-            return pickedUp = true;
+            pickedUp = true;
+            return pickedUp;
         }
 
     }
