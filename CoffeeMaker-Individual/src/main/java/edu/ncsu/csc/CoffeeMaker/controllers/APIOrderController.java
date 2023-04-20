@@ -51,7 +51,6 @@ public class APIOrderController extends APIController {
 
     @Autowired
     private OrderQueueService orderQueueService;
-
     @Autowired
     private UserService       userService;
 
@@ -134,7 +133,10 @@ public class APIOrderController extends APIController {
         order.fullfil();
         for ( final String recipeName : order.getRecipes().keySet() ) {
             for ( int i = 0; i < order.getRecipes().get( recipeName ); i++ ) {
-                inventoryService.getInventory().useIngredients( recipeService.findByName( recipeName ) );
+
+                final boolean current = inventoryService.getInventory()
+                        .useIngredients( recipeService.findByName( recipeName ) );
+                System.out.println( current );
             }
         }
         return new ResponseEntity( HttpStatus.OK );
