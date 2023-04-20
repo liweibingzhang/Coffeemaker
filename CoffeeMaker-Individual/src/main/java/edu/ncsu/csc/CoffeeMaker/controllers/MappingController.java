@@ -69,6 +69,7 @@ public class MappingController {
      */
     @GetMapping ( { "/index", "/index.html" } )
     public String index ( final Model model ) {
+
         return "index";
     }
 
@@ -81,8 +82,24 @@ public class MappingController {
      * @return contents of the page
      */
     @GetMapping ( { "/recipe", "/recipe.html" } )
-    public String addRecipePage ( final Model model ) {
-        return "recipe";
+    public String addRecipePage ( final Model model,
+            @CookieValue ( name = "username", required = false ) final String username,
+            @CookieValue ( name = "sessionid", required = false ) final String sessionid,
+            @CookieValue ( name = "type", required = false ) final String type ) {
+
+        if ( sessionid != null && type != null && username != null ) {
+            final CoffeemakerUser user = service.findByName( username );
+            if ( user != null && user.compareSessionId( sessionid )
+                    && user.getUserType() == CoffeemakerUserType.Staff ) {
+                return "recipe";
+            }
+            if ( user != null && user.compareSessionId( sessionid )
+                    && user.getUserType() == CoffeemakerUserType.Customer ) {
+                return "customer";
+            }
+        }
+
+        return "login";
     }
 
     /**
@@ -94,8 +111,25 @@ public class MappingController {
      * @return contents of the page
      */
     @GetMapping ( { "/deleterecipe", "/deleterecipe.html" } )
-    public String deleteRecipeForm ( final Model model ) {
-        return "deleterecipe";
+    public String deleteRecipeForm ( final Model model,
+            @CookieValue ( name = "username", required = false ) final String username,
+            @CookieValue ( name = "sessionid", required = false ) final String sessionid,
+            @CookieValue ( name = "type", required = false ) final String type ) {
+
+        if ( sessionid != null && type != null && username != null ) {
+            final CoffeemakerUser user = service.findByName( username );
+            if ( user != null && user.compareSessionId( sessionid )
+                    && user.getUserType() == CoffeemakerUserType.Staff ) {
+                return "deleterecipe";
+            }
+
+            if ( user != null && user.compareSessionId( sessionid )
+                    && user.getUserType() == CoffeemakerUserType.Customer ) {
+                return "customer";
+            }
+        }
+
+        return "login";
     }
 
     /**
@@ -107,8 +141,25 @@ public class MappingController {
      * @return contents of the page
      */
     @GetMapping ( { "/editrecipe", "/editrecipe.html" } )
-    public String editRecipeForm ( final Model model ) {
-        return "editrecipe";
+    public String editRecipeForm ( final Model model,
+            @CookieValue ( name = "username", required = false ) final String username,
+            @CookieValue ( name = "sessionid", required = false ) final String sessionid,
+            @CookieValue ( name = "type", required = false ) final String type ) {
+
+        if ( sessionid != null && type != null && username != null ) {
+            final CoffeemakerUser user = service.findByName( username );
+            if ( user != null && user.compareSessionId( sessionid )
+                    && user.getUserType() == CoffeemakerUserType.Staff ) {
+                return "editrecipe";
+            }
+
+            if ( user != null && user.compareSessionId( sessionid )
+                    && user.getUserType() == CoffeemakerUserType.Customer ) {
+                return "customer";
+            }
+        }
+
+        return "login";
     }
 
     /**
@@ -122,8 +173,25 @@ public class MappingController {
      * @return contents of the page
      */
     @GetMapping ( { "/inventory", "/inventory.html" } )
-    public String inventoryForm ( final Model model ) {
-        return "inventory";
+    public String inventoryForm ( final Model model,
+            @CookieValue ( name = "username", required = false ) final String username,
+            @CookieValue ( name = "sessionid", required = false ) final String sessionid,
+            @CookieValue ( name = "type", required = false ) final String type ) {
+
+        if ( sessionid != null && type != null && username != null ) {
+            final CoffeemakerUser user = service.findByName( username );
+            if ( user != null && user.compareSessionId( sessionid )
+                    && user.getUserType() == CoffeemakerUserType.Staff ) {
+                return "inventory";
+            }
+
+            if ( user != null && user.compareSessionId( sessionid )
+                    && user.getUserType() == CoffeemakerUserType.Customer ) {
+                return "customer";
+            }
+        }
+
+        return "login";
     }
 
     /**
@@ -135,8 +203,25 @@ public class MappingController {
      * @return contents of the page
      */
     @GetMapping ( { "/makecoffee", "/makecoffee.html" } )
-    public String makeCoffeeForm ( final Model model ) {
-        return "makecoffee";
+    public String makeCoffeeForm ( final Model model,
+            @CookieValue ( name = "username", required = false ) final String username,
+            @CookieValue ( name = "sessionid", required = false ) final String sessionid,
+            @CookieValue ( name = "type", required = false ) final String type ) {
+
+        if ( sessionid != null && type != null && username != null ) {
+            final CoffeemakerUser user = service.findByName( username );
+            if ( user != null && user.compareSessionId( sessionid )
+                    && user.getUserType() == CoffeemakerUserType.Staff ) {
+                return "makecoffee";
+            }
+
+            if ( user != null && user.compareSessionId( sessionid )
+                    && user.getUserType() == CoffeemakerUserType.Customer ) {
+                return "customer";
+            }
+        }
+
+        return "login";
     }
 
     /**
@@ -148,8 +233,26 @@ public class MappingController {
      * @return contents of the page
      */
     @GetMapping ( { "/addingredients", "/addingredients.html" } )
-    public String addIngredientsForm ( final Model model ) {
-        return "addingredients";
+    public String addIngredientsForm ( final Model model,
+            @CookieValue ( name = "username", required = false ) final String username,
+            @CookieValue ( name = "sessionid", required = false ) final String sessionid,
+            @CookieValue ( name = "type", required = false ) final String type ) {
+
+        if ( sessionid != null && type != null && username != null ) {
+            final CoffeemakerUser user = service.findByName( username );
+            if ( user != null && user.compareSessionId( sessionid )
+                    && user.getUserType() == CoffeemakerUserType.Staff ) {
+                return "addingredients";
+            }
+
+            if ( user != null && user.compareSessionId( sessionid )
+                    && user.getUserType() == CoffeemakerUserType.Customer ) {
+                return "customer";
+            }
+        }
+
+        return "login";
+
     }
 
     /**
@@ -174,8 +277,26 @@ public class MappingController {
      * @return contents of the page
      */
     @GetMapping ( { "/sendorder", "/sendorder.html" } )
-    public String sendOrderPage ( final Model model ) {
-        return "sendorder";
+    public String sendOrderPage ( final Model model,
+            @CookieValue ( name = "username", required = false ) final String username,
+            @CookieValue ( name = "sessionid", required = false ) final String sessionid,
+            @CookieValue ( name = "type", required = false ) final String type ) {
+
+        if ( sessionid != null && type != null && username != null ) {
+            final CoffeemakerUser user = service.findByName( username );
+            if ( user != null && user.compareSessionId( sessionid )
+                    && user.getUserType() == CoffeemakerUserType.Customer ) {
+                return "sendorder";
+            }
+
+            if ( user != null && user.compareSessionId( sessionid )
+                    && user.getUserType() == CoffeemakerUserType.Staff ) {
+                return "staff";
+            }
+        }
+
+        return "login";
+
     }
 
     /**
@@ -202,6 +323,11 @@ public class MappingController {
             if ( user != null && user.compareSessionId( sessionid )
                     && user.getUserType() == CoffeemakerUserType.Staff ) {
                 return "staff";
+            }
+
+            if ( user != null && user.compareSessionId( sessionid )
+                    && user.getUserType() == CoffeemakerUserType.Customer ) {
+                return "customer";
             }
         }
         return "login";
@@ -231,6 +357,11 @@ public class MappingController {
             if ( user != null && user.compareSessionId( sessionid )
                     && user.getUserType() == CoffeemakerUserType.Staff ) {
                 return "history";
+            }
+
+            if ( user != null && user.compareSessionId( sessionid )
+                    && user.getUserType() == CoffeemakerUserType.Customer ) {
+                return "customer";
             }
         }
         return "login";
@@ -287,8 +418,14 @@ public class MappingController {
             @CookieValue ( name = "type", required = false ) final String type ) {
         if ( sessionid != null && type != null && username != null ) {
             final CoffeemakerUser user = service.findByName( username );
-            if ( user != null && user.compareSessionId( sessionid ) ) {
+            if ( user != null && user.getUserType() == CoffeemakerUserType.Customer
+                    && user.compareSessionId( sessionid ) ) {
                 return "customer";
+            }
+
+            if ( user != null && user.compareSessionId( sessionid )
+                    && user.getUserType() == CoffeemakerUserType.Staff ) {
+                return "staff";
             }
         }
         return "login";
@@ -309,15 +446,21 @@ public class MappingController {
      *            User type
      * @return contents of the page
      */
-    @GetMapping ( { "/vieworder", "/viewOrder.html" } )
+    @GetMapping ( { "/vieworder", "/vieworder.html" } )
     public String viewOrder ( final Model model,
             @CookieValue ( name = "username", required = false ) final String username,
             @CookieValue ( name = "sessionid", required = false ) final String sessionid,
             @CookieValue ( name = "type", required = false ) final String type ) {
         if ( sessionid != null && type != null && username != null ) {
             final CoffeemakerUser user = service.findByName( username );
-            if ( user != null && user.compareSessionId( sessionid ) ) {
+            if ( user != null && user.getUserType() == CoffeemakerUserType.Customer
+                    && user.compareSessionId( sessionid ) ) {
                 return "viewOrder";
+            }
+
+            if ( user != null && user.getUserType() == CoffeemakerUserType.Staff
+                    && user.compareSessionId( sessionid ) ) {
+                return "staff";
             }
         }
         return "login";

@@ -388,6 +388,16 @@ public class RecipeTest {
         final Recipe r2 = createRecipe( "Coffee", 50, 10, 20, 30, 40 );
         r1.updateRecipe( r2 );
 
+        // Should throw error if null recipe for update
+        try {
+            r1.updateRecipe( null );
+            fail( "updateRecipe should throw an exception when null is passed" );
+        }
+        catch ( final Exception e ) {
+            Assertions.assertEquals( IllegalArgumentException.class, e.getClass() );
+
+        }
+
         assertTrue( r1.getName().equals( r2.getName() ) );
         Assertions.assertEquals( 50, (int) r1.getPrice() );
         Assertions.assertEquals( 10, (int) r1.getIngredient( "Coffee" ).getAmount() );
@@ -477,6 +487,16 @@ public class RecipeTest {
         r1.addIngredient( i2 );
         r1.addIngredient( i3 );
 
+        // Adding null ingredient should return error
+        try {
+            r1.addIngredient( null );
+            fail( "addIngredient should throw an exception when null is passed" );
+        }
+        catch ( final Exception e ) {
+            Assertions.assertEquals( IllegalArgumentException.class, e.getClass() );
+
+        }
+
         // Try to remove milk
         assertTrue( r1.removeIngredient( i2 ) );
 
@@ -527,6 +547,42 @@ public class RecipeTest {
         assertEquals( 1, r1.getIngredient( "Coffee" ).getAmount() );
         assertEquals( 2, r1.getIngredient( "Milk" ).getAmount() );
         assertEquals( 32, r1.getIngredient( "Oat Milk" ).getAmount() );
+
+        // test null
+        try {
+            r1.getIngredient( null );
+            fail( "getIngredient should throw an exception when null is passed" );
+        }
+        catch ( final Exception e ) {
+            Assertions.assertEquals( IllegalArgumentException.class, e.getClass() );
+
+        }
+
+        // test setting invalid parameters
+        try {
+            r1.setIngredientAmount( "Oat Milk", -1 );
+            fail( "setIngredientAmount should throw an exception when negative number is passed" );
+        }
+        catch ( final Exception e ) {
+            Assertions.assertEquals( IllegalArgumentException.class, e.getClass() );
+
+        }
+        try {
+            r1.setIngredientAmount( "", 1 );
+            fail( "setIngredientAmount should throw an exception when empty string is passed" );
+        }
+        catch ( final Exception e ) {
+            Assertions.assertEquals( IllegalArgumentException.class, e.getClass() );
+
+        }
+        try {
+            r1.setIngredientAmount( "", -1 );
+            fail( "setIngredientAmount should throw an exception when empty string and negative number is passed" );
+        }
+        catch ( final Exception e ) {
+            Assertions.assertEquals( IllegalArgumentException.class, e.getClass() );
+
+        }
 
     }
 
