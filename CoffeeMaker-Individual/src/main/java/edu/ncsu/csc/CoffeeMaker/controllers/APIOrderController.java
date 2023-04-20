@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import edu.ncsu.csc.CoffeeMaker.models.CoffeemakerOrder;
 import edu.ncsu.csc.CoffeeMaker.models.CoffeemakerUser;
+import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
+import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.models.enums.CoffeemakerUserType;
 import edu.ncsu.csc.CoffeeMaker.models.enums.Permissions;
 import edu.ncsu.csc.CoffeeMaker.services.InventoryService;
@@ -131,6 +133,25 @@ public class APIOrderController extends APIController {
             return new ResponseEntity( errorResponse( "Invalid permissions" ), HttpStatus.UNAUTHORIZED );
         }
         final CoffeemakerOrder order = orderService.findById( id.get( "id" ) );
+        final Recipe totalRequirement = new Recipe( "THIS_SHOULD_NOT_BE_SAVED", new ArrayList<Ingredient>(), 5 );
+        for ( final String recipeName : order.getRecipes().keySet() ) {
+            for ( int i = 0; i < order.getRecipes().get( recipeName ); i++ ) {
+                final Recipe tempRecipe = recipeService.findByName( recipeName );
+                for ( final Ingredient ingredient : tempRecipe.getIngredients() ) {
+                    try {
+                        totalRequirement.addIngredient( ingredient );
+                    }
+                    catch ( final Exception e ) {
+                        totalRequirement.setIngredientAmount( ingredient.getName(),
+                                totalRequirement.getIngredient( ingredient.getName() ).getAmount()
+                                        + ingredient.getAmount() );
+                    }
+                }
+            }
+        }
+        if ( !inventoryService.getInventory().enoughIngredients( totalRequirement ) ) {
+            return new ResponseEntity( errorResponse( "Not enough ingredients" ), HttpStatus.PRECONDITION_FAILED );
+        }
         order.fullfil();
         for ( final String recipeName : order.getRecipes().keySet() ) {
             for ( int i = 0; i < order.getRecipes().get( recipeName ); i++ ) {
