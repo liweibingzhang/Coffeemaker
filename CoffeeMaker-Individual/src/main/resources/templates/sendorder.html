@@ -27,15 +27,33 @@
 
 		var app = angular.module('myApp', []);
 		app.controller('sendOrder', function($scope, $http, $q) {
-			$scope.totalCost = 0;
+			$scope.reset = function() {
+				$scope.order = {
+					recipes: [{recipe: '', count: ''}]
+				};
+					
+				$scope.recipeNames = {
+					names: []
+				};
+				
+				$scope.totalCost = 0;
+				$scope.payment = "";
+				$scope.dup = false
+				
+				if ($scope.addOrderForm) {
+					$scope.addOrderForm.$setPristine();
+				}
+				console.log("Reset")
+			}
 			
+			/**
 			$scope.order = {
 				recipes: [{recipe: '', count: ''}]
 			};
 			
 			$scope.recipeNames = {
 					names: []
-				};
+				};*/
 			
 			$scope.getRecipes = function() {
 	        	$http.get("/api/v1/recipes").then(function(response) {
@@ -53,6 +71,21 @@
 				$scope.totalCost = cost;
 			}
 			
+			$scope.submit = function() {
+				
+				$scope.dup = false;
+				for(let i = 0; i < $scope.order.recipes.length; i++) {
+					$scope.checkRecipe(i);
+				}
+				
+				if($scope.dup == false) {
+					$scope.pay()
+				}
+				else {
+					alert("Duplicate Items are not allowed.")
+				}
+			}
+			
 			$scope.pay = function() {
 				if ($scope.payment >= $scope.totalCost) {
 					
@@ -64,6 +97,8 @@
 					console.log(map)
 					$http.put("/api/v1/order", map).then(function(response) {
 		        		console.log(response);
+		        		alert("Order was placed successfully, Your change is " + ($scope.payment - $scope.totalCost))
+		        		$scope.reset();
 		        	});
 				}
 				else {
@@ -72,14 +107,26 @@
 			}
 			
 			$scope.getRecipe = function(idx) {
-				let name = $scope.recipeNames.names[idx]
-				console.log(name);
-				$http.get("/api/v1/recipes/" + name).then(function(response) {
-	        		let r = response.data;
-	        		$scope.order.recipes[idx].recipe = r;
-	        		$scope.calcCost();
-	        	});
-				console.log($scope.order);
+				if ( $scope.recipeNames.names[idx]){
+					let name = $scope.recipeNames.names[idx]
+					console.log(name);
+					$http.get("/api/v1/recipes/" + name).then(function(response) {
+		        		let r = response.data;
+		        		$scope.order.recipes[idx].recipe = r;
+		        		$scope.calcCost();
+		        	});
+					console.log($scope.order);
+				}
+			}
+			
+			$scope.checkRecipe = function(idx){
+				let name = $scope.order.recipes.at(idx).recipe.name
+				
+				for(let i = 0; i < $scope.order.recipes.length; i++) {
+					if(i != idx && $scope.order.recipes.at(i).recipe.name == name) {
+						$scope.dup = true;
+					}
+				}
 			}
 			
 			$scope.removeRecipe = function (idx) {
@@ -94,6 +141,7 @@
 				$scope.order.recipes.push({recipe: '', count: ''});
 			}
 			
+			$scope.reset();
 			$scope.getRecipes();
 		});
 		
@@ -109,8 +157,7 @@
 			<form ng-submit="submit()" name="addOrderForm" ng-model="addOrderForm" class="form-horizontal">
 				<div class="row">
 					<div class="form-group col-md-12">
-						<div class="col-md-2"></div>
-						<div class="col-md-10"><label>Items</label></div>
+						<label>Items</label>
 					</div>
 				</div>
 				
@@ -126,7 +173,7 @@
 						<input type="number" ng-model="order.recipes[$index].count"
 								   class="form-control input-sm" ng-change="calcCost()" placeholder="Enter amount" required="0" min="0"/>
 						<div class="has-error" ng-show="addRecipeForm.$dirty"></div>
-						
+						<br>
 						<div class="col-md-0">
 							<button type="button" name="add" class="btn btn-danger"
 									ng-click="addRecipe()">+
@@ -140,23 +187,28 @@
 					</div>
 				</div>
 				
+				<div class="form-group col-md-12">
 				<div class="row">
 					Total Cost: {{totalCost}}
 				</div>
+				</div>
 				
+				<div class="form-group col-md-12">
 				<div class="row">
 					<label>Enter Payment: </label>
 					<input type="number" ng-model="payment"
 						class="form-control input-sm" placeholder="Enter amount" required="0" min="0"/>
 				</div>
+				</div>
 				
 				<div class="row">
 					<div class="form-actions floatRight">
-						<input type="submit" value="Submit" ng-click="pay()"
-							   class="btn btn-primary btn-sm"/>
+						<input type="submit" value="Submit" 
+								ng-disabled="addOrderForm.$pristine || invalid"
+							   	class="btn btn-primary btn-sm"/>
 						<button type="button" ng-click="reset()"
 								class="btn btn-warning btn-sm"
-								ng-disabled="addRecipeForm.$pristine">Reset Form
+								ng-disabled="addOrderForm.$pristine">Reset Form
 						</button>
 					</div>
 				</div>
