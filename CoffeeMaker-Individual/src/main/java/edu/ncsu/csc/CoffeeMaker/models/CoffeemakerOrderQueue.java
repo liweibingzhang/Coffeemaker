@@ -1,5 +1,6 @@
 package edu.ncsu.csc.CoffeeMaker.models;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -33,7 +34,7 @@ public class CoffeemakerOrderQueue extends DomainObject {
      * @return long
      */
     @Override
-    public Long getId () {
+    public Serializable getId () {
         return id;
     }
 
