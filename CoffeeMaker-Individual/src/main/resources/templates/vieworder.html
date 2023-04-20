@@ -1,16 +1,154 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<title>View your orders</title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-</head>
-<body>
-	
-	<h2>Pick up any completed orders</h2>
-	<ul>
-		<li></li>
-		<li>Order details</li>
+<title>View/Pickup Order</title>
+<style>
+		input.ng-valid {
+			background-color: lightgreen;
+		}
+
+		input.ng-dirty.ng-invalid-required, input.ng-dirty.ng-invalid-number {
+			background-color: red;
+		}
+
+		input.ng-dirty.ng-invalid-min {
+			background-color: yellow;
+		}
 		
-	</ul>
+		td {
+			font-size : 15px; 
+			padding-right : 20px;
+		}
+	</style>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" href="css/bootstrap.css" />
+<link rel="stylesheet" href="css/app.css" />
+</head>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+<body>
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+
+		var app = angular.module('myApp', []);
+		app.controller('viewOrder', function($scope, $http, $q) {
+			
+			$scope.orderID = {
+					id: []
+				};
+			$scope.orders = {
+					allorders:[]
+			};
+			
+			$scope.getorder = function() {
+	        	$http.get("/api/v1/order").then(function(response) {
+	        		$scope.orders.allorders = response.data;
+	        		console.log($scope.orders);
+	        		
+	        		/**
+	        		for(let i = 0; i < $scope.orders.allorders.length; i++){
+						$scope.orderID.id[i] = $scope.orders.allorders.at(i).id;
+					*/
+					console.log($scope.orders.allorders.at(0).id);
+	        	});
+        	}
+				
+			$scope.getorder();		
+
+		});
+		
+		/*]]>*/
+	</script>
+<html>
+<head>
+	<title>Clickable Circle Button Type Example</title>
+	<style>
+		.circle {
+			background-color: white;
+			border-radius: 50%;
+			width: 15px;
+			height: 15px;
+			border: 2px solid black;
+			outline: none;
+			cursor: pointer;
+		}
+		.circle.clicked {
+			background-color: black;
+		}
+	</style>
+	<button class="circle" onclick="this.classList.toggle('clicked')"></button>
+</head>
+</html>
+	<div ng-app="myApp" ng-controller="viewOrder">
+		<div class="panel panel-default">
+		<div class="panel-heading">
+			<span class="lead">View/Pickup Order</span>
+	<html>
+		<head>
+			<title>Refresh</title>
+		</head>
+			<body>
+			<button onclick="location.reload()">Refresh</button>
+			</body>
+		</html>
+	<html>
+		<head>
+			<title>Table Example</title>
+				</head>
+					<body>
+					<table>
+					<tr>
+						<th>Order ID</th>
+						<th>Items</th>
+						<th>Status</th>
+						<th>Pickup</th>
+					</tr>
+					<div class="form-group col-md-12" ng-repeat="allorders in orders.allorders">
+						<select name="{{ $index }}" class="form-control"
+									ng-model="allorders.creationTime[$index]"
+									ng-options="item.creationTime as item.creationTime for item in allorders" required="true">
+						<option value="">View Orders</option>
+						</select>
+					
+							<div>
+								<li>{{allorders.id}}</li>
+								<li>{{allorders.recipes.name}</li>
+								<li>{{allorders.pickedUp}}</li>
+								
+							</div>
+						
+						
+					</div>
+					</table>
+					</body>
+				</html>
+
+				
+				
+				<html>
+					<head>
+						<title>Pick Up Button</title>
+						</head>
+						<body>
+								<button>Pick Up</button>
+						</body>
+				</html>	
+		
+		
+				<div class="row">
+					<div class="form-actions floatRight">
+						<input type="submit" value="Submit" ng-click="pay()"
+							   class="btn btn-primary btn-sm"/>
+						<button type="button" ng-click="reset()"
+								class="btn btn-warning btn-sm"
+								ng-disabled="addRecipeForm.$pristine">Reset Form
+						</button>
+					</div>
+				</div>
+
+			</form>
+		</div>
+		</div>
+	</div>
 </body>
 </html>
