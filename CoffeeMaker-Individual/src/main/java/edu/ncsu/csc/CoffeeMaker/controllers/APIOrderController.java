@@ -133,10 +133,7 @@ public class APIOrderController extends APIController {
         order.fullfil();
         for ( final String recipeName : order.getRecipes().keySet() ) {
             for ( int i = 0; i < order.getRecipes().get( recipeName ); i++ ) {
-
-                final boolean current = inventoryService.getInventory()
-                        .useIngredients( recipeService.findByName( recipeName ) );
-                System.out.println( current );
+                inventoryService.getInventory().useIngredients( recipeService.findByName( recipeName ) );
             }
         }
         return new ResponseEntity( HttpStatus.OK );
