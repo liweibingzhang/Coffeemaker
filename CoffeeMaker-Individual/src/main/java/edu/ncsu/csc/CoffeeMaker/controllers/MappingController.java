@@ -417,7 +417,7 @@ public class MappingController {
      *            User type
      * @return contents of the page
      */
-    @GetMapping ( { "/vieworder", "/viewOrder.html" } )
+    @GetMapping ( { "/vieworder", "/vieworder.html" } )
     public String viewOrder ( final Model model,
             @CookieValue ( name = "username", required = false ) final String username,
             @CookieValue ( name = "sessionid", required = false ) final String sessionid,
