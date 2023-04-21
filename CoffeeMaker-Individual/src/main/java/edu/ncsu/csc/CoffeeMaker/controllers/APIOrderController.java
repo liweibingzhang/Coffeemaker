@@ -49,28 +49,44 @@ public class APIOrderController extends APIController {
     @Autowired
     private InventoryService  inventoryService;
 
+    /**
+     * OrderService object, to be autowired in by Spring to allow for
+     * manipulating the Order models
+     */
     @Autowired
     private OrderService      orderService;
 
+    /**
+     * OrderQueueService object, to be autowired in by Spring to allow for
+     * manipulating the order queue model
+     */
     @Autowired
     private OrderQueueService orderQueueService;
 
+    /**
+     * UserService object, to be autowired in by Spring to allow for
+     * manipulating the user models
+     */
     @Autowired
     private UserService       userService;
 
+    /**
+     * RecipeService object, to be autowired in by Spring to allow for
+     * manipulating the recipe models
+     */
     @Autowired
     private RecipeService     recipeService;
 
     /**
-     * REST API method to make coffee by completing a POST request with the ID
-     * of the recipe as the path variable and the amount that has been paid as
-     * the body of the response
+     * Endpoint to get the orders visible to the current signed in user. Staff
+     * can see all orders, users can see their own orders
      *
-     * @param name
-     *            recipe name
-     * @param amtPaid
-     *            amount paid
-     * @return The change the customer is due if successful
+     * @param username
+     *            Username from signed in user.
+     * @param sessionid
+     *            Session id from signed in user
+     * @return Either all orders or some subset belonging to a particular user
+     *         depending on the account type calling this endpoint
      */
     @GetMapping ( BASE_PATH + "/order" )
     public ResponseEntity getOrders ( @CookieValue ( "username" ) final String username,
@@ -101,6 +117,17 @@ public class APIOrderController extends APIController {
         return new ResponseEntity( orderList, HttpStatus.OK );
     }
 
+    /**
+     * Creates a new order with the given recipes and quantities.
+     *
+     * @param recipes
+     *            Recipes with associated quantities in a map.
+     * @param username
+     *            Username of the user placing the order
+     * @param sessionid
+     *            Valid session id for the user named username
+     * @return ID of the new order created
+     */
     @PutMapping ( BASE_PATH + "/order" )
     public ResponseEntity createOrder ( @RequestBody final Map<String, Integer> recipes,
             @CookieValue ( "username" ) final String username, @CookieValue ( "sessionid" ) final String sessionid ) {
@@ -119,6 +146,18 @@ public class APIOrderController extends APIController {
         return new ResponseEntity( order.getId(), HttpStatus.OK );
     }
 
+    /**
+     * Changes an order status to fulfilled.
+     *
+     * @param id
+     *            ID of the order to update
+     * @param username
+     *            Username of the staff fulfilling the order
+     * @param sessionid
+     *            SessionID of the staff fulfilling the order
+     * @return OK Status if the order could be made using the ingredients in the
+     *         inventory.
+     */
     @PostMapping ( BASE_PATH + "/order/fulfill" )
     public ResponseEntity fulfillOrder ( @RequestBody final Map<String, Long> id,
             @CookieValue ( "username" ) final String username, @CookieValue ( "sessionid" ) final String sessionid ) {
@@ -166,6 +205,18 @@ public class APIOrderController extends APIController {
         return new ResponseEntity( HttpStatus.OK );
     }
 
+    /**
+     * Changes an order status to fulfilled.
+     *
+     * @param id
+     *            ID of the order to update
+     * @param username
+     *            Username of the staff fulfilling the order
+     * @param sessionid
+     *            SessionID of the staff fulfilling the order
+     * @return OK Status if the order belonged to the user trying to pick it up,
+     *         and it has been fulfilled.
+     */
     @PostMapping ( BASE_PATH + "/order/pickup" )
     public ResponseEntity pickupOrder ( @RequestBody final Map<String, Long> id,
             @CookieValue ( "username" ) final String username, @CookieValue ( "sessionid" ) final String sessionid ) {
@@ -184,7 +235,9 @@ public class APIOrderController extends APIController {
         if ( !order.getUsername().equals( user.getName() ) ) {
             return new ResponseEntity( errorResponse( "Invalid permissions" ), HttpStatus.UNAUTHORIZED );
         }
-
+        if ( !order.isFullfilled() ) {
+            return new ResponseEntity( errorResponse( "Order cannot be picked up yet" ), HttpStatus.CONFLICT );
+        }
         if ( order != null ) {
             order.pickup();
             orderService.save( order );
