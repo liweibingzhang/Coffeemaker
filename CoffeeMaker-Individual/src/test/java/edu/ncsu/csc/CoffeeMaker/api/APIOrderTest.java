@@ -234,6 +234,12 @@ public class APIOrderTest {
         final Map<String, Long> tempMap = new TreeMap<String, Long>();
         tempMap.put( "id", id );
 
+        mvc.perform( post( "/api/v1/order/fulfill" ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( tempMap ) )
+                .cookie( new Cookie( "sessionid", staffDetails.get( "sessionid" ) ),
+                        new Cookie( "username", staffDetails.get( "username" ) ) ) )
+                .andExpect( status().isOk() );
+
         mvc.perform( post( "/api/v1/order/pickup" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( tempMap ) )
                 .cookie( new Cookie( "sessionid", customerDetails.get( "sessionid" ) ),
