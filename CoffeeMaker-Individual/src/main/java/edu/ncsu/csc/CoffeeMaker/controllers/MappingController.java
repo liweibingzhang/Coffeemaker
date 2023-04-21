@@ -79,6 +79,13 @@ public class MappingController {
      *
      * @param model
      *            underlying UI model
+     * @param username
+     *            Username of the user attemping to access the page.
+     * @param sessionid
+     *            Session of the user attempting to access the page.
+     * @param type
+     *            Type of user attempting to access the page (not trusted for
+     *            Authentication purposes)
      * @return contents of the page
      */
     @GetMapping ( { "/recipe", "/recipe.html" } )
@@ -108,6 +115,13 @@ public class MappingController {
      *
      * @param model
      *            underlying UI model
+     * @param username
+     *            Username of the user attemping to access the page.
+     * @param sessionid
+     *            Session of the user attempting to access the page.
+     * @param type
+     *            Type of user attempting to access the page (not trusted for
+     *            Authentication purposes)
      * @return contents of the page
      */
     @GetMapping ( { "/deleterecipe", "/deleterecipe.html" } )
@@ -138,6 +152,13 @@ public class MappingController {
      *
      * @param model
      *            underlying UI model
+     * @param username
+     *            Username of the user attemping to access the page.
+     * @param sessionid
+     *            Session of the user attempting to access the page.
+     * @param type
+     *            Type of user attempting to access the page (not trusted for
+     *            Authentication purposes)
      * @return contents of the page
      */
     @GetMapping ( { "/editrecipe", "/editrecipe.html" } )
@@ -170,6 +191,13 @@ public class MappingController {
      *
      * @param model
      *            underlying UI model
+     * @param username
+     *            Username of the user attemping to access the page.
+     * @param sessionid
+     *            Session of the user attempting to access the page.
+     * @param type
+     *            Type of user attempting to access the page (not trusted for
+     *            Authentication purposes)
      * @return contents of the page
      */
     @GetMapping ( { "/inventory", "/inventory.html" } )
@@ -200,6 +228,13 @@ public class MappingController {
      *
      * @param model
      *            underlying UI model
+     * @param username
+     *            Username of the user attemping to access the page.
+     * @param sessionid
+     *            Session of the user attempting to access the page.
+     * @param type
+     *            Type of user attempting to access the page (not trusted for
+     *            Authentication purposes)
      * @return contents of the page
      */
     @GetMapping ( { "/makecoffee", "/makecoffee.html" } )
@@ -230,6 +265,13 @@ public class MappingController {
      *
      * @param model
      *            underlying UI model
+     * @param username
+     *            Username of the user attemping to access the page.
+     * @param sessionid
+     *            Session of the user attempting to access the page.
+     * @param type
+     *            Type of user attempting to access the page (not trusted for
+     *            Authentication purposes)
      * @return contents of the page
      */
     @GetMapping ( { "/addingredients", "/addingredients.html" } )
