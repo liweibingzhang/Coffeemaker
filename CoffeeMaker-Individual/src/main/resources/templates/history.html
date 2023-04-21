@@ -1,0 +1,98 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Welcome to the CSC326 CoffeeMaker</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+</head>
+<body>
+	<script>
+		/*<![CDATA[*/
+		var app = angular.module('myApp', []);
+		app.controller('history', function($scope, $http, $window) {
+			$scope.orders = [];
+			$scope.recipes = []; 
+			$scope.map = new Map(); 
+			$scope.updateData = () => {
+				$http.get('/api/v1/recipes').then((response) => {
+					recipes = response.data; 
+					$scope.map = new Map();  
+					for(let i = 0; i < recipes.length; i += 1){
+						let recipeName = recipes[i].name;
+						let recipePrice = recipes[i].price; 
+						$scope.map.set(recipeName, recipePrice); 
+					}
+					
+					$http.get('/api/v1/order').then(function(response) {
+		        		$scope.orders = response.data;
+		        		$scope.overallTotal = 0; 
+		        		for(let i = 0; i < $scope.orders.length; i += 1) {
+		        			const currOrder = $scope.orders[i]; 
+		        			const recipes = currOrder.recipes; 
+		        			let total = 0; 
+		        			
+		        			for (const property in recipes) {
+		        				 console.log(`${property}: ${recipes[property]}`);
+		        				 total += $scope.map.get(property) * recipes[property]; 
+		        			}
+							
+		        			currOrder.total = total; 
+		        			if(currOrder.fullfilled && currOrder.pickedUp != true){
+								currOrder.status = "Fulfilled"; 
+	                        }
+	                        else if(currOrder.pickedUp && currOrder.fullfilled){
+	                        	currOrder.status = "Picked up";  
+	                       	}
+	                        else {
+	                        	currOrder.status = "Ordered"; 
+	                        } 
+		        			
+		        			currOrder.newDate = new Date(currOrder.creationTime).toLocaleString('en-US', { timeZone: 'UTC' }); 
+		        			$scope.overallTotal += currOrder.total; 
+		        		}
+		        		
+		        		//console.log(overallTotal);  
+		        	});	
+				})
+			}
+			
+			$scope.updateData(); 
+			setInterval($scope.updateData, 60000);  
+		});
+		/*]]>*/
+	</script>
+	
+	<div ng-app="myApp" ng-controller="history">
+		<h1>History of Orders</h1>
+		<div class="row">
+			<div class="col-sm">
+				<table border="1">
+					<tr>
+						<th>Username of the Customer</th>
+						<th>Time</th>
+						<th>Order</th>
+						<th>Status</th>
+						<th>Total</th>
+					</tr>
+					<tr ng-repeat="order in orders">
+					  	<td>{{order.username}}</td> 
+					  	<td>{{order.newDate}}</td> 
+					  	<td>
+					  		<ul ng-repeat="(key,val) in order.recipes" style="padding-right : 20px">{{key}}: {{val}}</ul>
+					  	</td>
+					  	<td>{{order.status}}</td>
+					  	<td>{{order.total}}</td>
+					</tr>
+				</table> 
+				<h3>Total: {{overallTotal}}</h3>
+				<h2>
+				    <a href="staff.html">
+						<button>Home</button>
+					</a>
+			  </h2>
+			</div>
+		</div>
+	</div>
+	 
+</body>
+</html>
