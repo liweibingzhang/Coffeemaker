@@ -194,8 +194,8 @@ public class CoffeemakerUser extends DomainObject {
     public void setPasswordHash ( final String password ) {
         final byte[] bytes = new byte[16];
         random.nextBytes( bytes );
-        salt = toHexString( bytes );
-        this.passwordHash = toHexString( getSHA( password + salt ) );
+        salt = getSHA( bytes );
+        this.passwordHash = getSHA( password + salt );
     }
 
     /**
@@ -206,7 +206,7 @@ public class CoffeemakerUser extends DomainObject {
      * @return True if the passwords are equal
      */
     public boolean compareHash ( final String password ) {
-        return passwordHash.equals( toHexString( getSHA( password + salt ) ) );
+        return passwordHash.equals( getSHA( password + salt ) );
     }
 
     /**
@@ -216,7 +216,7 @@ public class CoffeemakerUser extends DomainObject {
      *            Text to hash
      * @return Hash of the password
      */
-    private static byte[] getSHA ( final String input ) {
+    private static String getSHA ( final String input ) {
         MessageDigest md = null;
         try {
             md = MessageDigest.getInstance( "SHA-256" );
@@ -226,24 +226,37 @@ public class CoffeemakerUser extends DomainObject {
             e.printStackTrace();
         }
 
-        return md.digest( input.getBytes( StandardCharsets.UTF_8 ) );
-    }
+        final byte[] hash = md.digest( input.getBytes( StandardCharsets.UTF_8 ) );
 
-    /**
-     * Converts bytes to a hex string.
-     *
-     * @param hash
-     *            Bytes.
-     * @return Hex string.
-     */
-    private static String toHexString ( final byte[] hash ) {
         final BigInteger number = new BigInteger( 1, hash );
 
         final StringBuilder hexString = new StringBuilder( number.toString( 16 ) );
 
-        while ( hexString.length() < 64 ) {
-            hexString.insert( 0, '0' );
+        return hexString.toString();
+    }
+
+    /**
+     * Get SHA256 hash of string
+     *
+     * @param input
+     *            Text to hash
+     * @return Hash of the password
+     */
+    private static String getSHA ( final byte[] input ) {
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance( "SHA-256" );
         }
+        catch ( final NoSuchAlgorithmException e ) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        final byte[] hash = md.digest( input );
+
+        final BigInteger number = new BigInteger( 1, hash );
+
+        final StringBuilder hexString = new StringBuilder( number.toString( 16 ) );
 
         return hexString.toString();
     }
@@ -256,10 +269,11 @@ public class CoffeemakerUser extends DomainObject {
     public final String login () {
         final byte[] bytes = new byte[64];
         random.nextBytes( bytes );
-        this.sessionId = toHexString( bytes );
+        final String returnedSessionId = getSHA( bytes );
+        this.sessionId = getSHA( returnedSessionId );
         this.loggedIn = true;
         this.lastTime = System.currentTimeMillis();
-        return this.sessionId;
+        return returnedSessionId;
     }
 
     /**
@@ -282,8 +296,8 @@ public class CoffeemakerUser extends DomainObject {
             return false;
         }
         // Hash to prevent timing attacks
-        final String thisSessionHashed = toHexString( getSHA( this.sessionId ) );
-        final String proposedSessionHashed = toHexString( getSHA( sessionId ) );
+        final String thisSessionHashed = this.sessionId;
+        final String proposedSessionHashed = getSHA( sessionId );
         final boolean rightId = thisSessionHashed.equals( proposedSessionHashed ) && this.loggedIn;
         if ( rightId ) {
             this.lastTime = System.currentTimeMillis();

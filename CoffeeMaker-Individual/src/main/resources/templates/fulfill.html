@@ -1,0 +1,111 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Welcome to the CSC326 CoffeeMaker</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+</head>
+<body>
+	<style>
+		 th, td {
+		  border-color: white;
+		}
+	</style>
+	<script>
+		/*<![CDATA[*/
+		var app = angular.module('myApp', []);
+		app.controller('fulfill', function($scope, $http, $window) {
+			$scope.orders = [];
+			$scope.invalid = true;
+			
+			$scope.validCheck = function(status) {
+				if (status == "Ordered") {
+					$scope.invalid = false;
+				}
+				else {
+					$scope.invalid = true;
+				}
+			}
+			
+			$scope.getOrders = () => {
+				$http.get('/api/v1/order').then(function(response) {
+	        		$scope.orders = response.data;
+					$scope.selectedOrder = $scope.orders[0]; 
+					for(let i = 0; i < $scope.orders.length; i += 1) {
+						$scope.orders[i].title = `${$scope.orders[i].username}\'s order  @ ${new Date($scope.orders[i].creationTime)}`
+							if($scope.orders[i].fullfilled && $scope.orders[i].pickedUp != true){
+								$scope.orders[i].status = "Fulfilled"; 
+	                        }
+	                        else if($scope.orders[i].pickedUp && $scope.orders[i].fullfilled){
+	                        	$scope.orders[i].status = "Picked up";  
+	                       	}
+	                        else {
+	                        	$scope.orders[i].status = "Ordered"; 
+	                        } 
+					}
+	        	});
+					
+			}
+		
+			
+			$scope.getOrders(); 
+			setInterval($scope.getOrders, 60000);  
+			
+			$scope.onSubmit = () => {
+				console.log($scope.selectedOrder.id)
+				let body = {
+					id : $scope.selectedOrder.id, 
+				}
+				
+				console.log(body)
+				$http.post("/api/v1/order/fulfill", body).then(
+						function(success) {
+							console.log(response.status)
+							$scope.getOrders(); 
+							$scope.invalid = true;
+					}, function(rejection) {
+							if(rejection.status == 412) {
+								alert("Not enough ingredients");
+							}
+							else {
+								alert("Error fulfilling recipe");
+							}
+				}); 	
+			}
+		});
+		/*]]>*/
+	</script>
+	
+	<div ng-app="myApp" ng-controller="fulfill">
+		<h1>View/Fulfill Orders</h1>
+		<div class="row">
+			<div class="col-sm">
+				<h3>Select an Orders</h3>
+				<select ng-model="selectedOrder" ng-change="validCheck(selectedOrder.status)" ng-options="item as item.title for item in orders" required="true">
+					<option value="">Select Order to Fulfill</option>
+				</select>
+				<h3>Current Order of {{selectedOrder.username}}</h3>
+				<h4>Status: {{selectedOrder.status}}</h4>
+				<table border="1">
+					<tr>
+						<th>Name of the Recipes</th>
+						<th>Quantity of the Recipes</th>
+					</tr>
+					<tr ng-repeat="(key,val) in selectedOrder.recipes">
+					  <td>{{key}} </td> 
+					  <td>{{val}} </td> 
+					</tr>
+				</table>
+				<h2>
+				<button ng-disabled="invalid" ng-click="onSubmit()">Submit</button>
+				
+				    <a href="staff.html">
+						<button>Home</button>
+					</a>
+			  </h2>
+			</div>
+		</div>
+	</div>
+	 
+</body>
+</html>
