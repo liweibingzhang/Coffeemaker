@@ -303,13 +303,6 @@ public class MappingController {
      *
      * @param model
      *            underlying UI model
-     * @param username
-     *            Username of the user attemping to access the page.
-     * @param sessionid
-     *            Session of the user attempting to access the page.
-     * @param type
-     *            Type of user attempting to access the page (not trusted for
-     *            Authentication purposes)
      * @return contents of the page
      */
     @GetMapping ( { "/signup", "/signup.html" } )
@@ -323,7 +316,13 @@ public class MappingController {
      *
      * @param model
      *            underlying UI model
-     *
+     * @param username
+     *            Username of the user attemping to access the page.
+     * @param sessionid
+     *            Session of the user attempting to access the page.
+     * @param type
+     *            Type of user attempting to access the page (not trusted for
+     *            Authentication purposes)
      * @return contents of the page
      */
     @GetMapping ( { "/sendorder", "/sendorder.html" } )
