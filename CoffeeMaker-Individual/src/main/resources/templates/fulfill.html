@@ -58,19 +58,12 @@
 				}
 				
 				console.log(body)
-				$http.post("/api/v1/order/fulfill", body).then(
-						function(success) {
-							console.log(response.status)
-							$scope.getOrders(); 
-							$scope.invalid = true;
-					}, function(rejection) {
-							if(rejection.status == 412) {
-								alert("Not enough ingredients");
-							}
-							else {
-								alert("Error fulfilling recipe");
-							}
-				}); 	
+				$http.post('/api/v1/order/fulfill', body).then((response) => {
+					$scope.orders = [];
+					// reset the orders to get the new updated list of orders 
+					$scope.getOrders(); 
+					
+				})
 			}
 		});
 		/*]]>*/
