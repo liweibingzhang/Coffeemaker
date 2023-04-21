@@ -14,11 +14,11 @@ import edu.ncsu.csc.CoffeeMaker.models.CoffeemakerOrderQueue;
 import edu.ncsu.csc.CoffeeMaker.repositories.OrderQueueRepository;
 
 /**
- * The InventoryService is used to handle CRUD operations on the Inventory
- * model. In addition to all functionality in `Service`, we also manage the
- * Inventory singleton.
+ * The OrderService is used to handle CRUD operations on the Order model. In
+ * addition to all functionality in `Service`, we also manage the Order
+ * singleton.
  *
- * @author Kai Presler-Marshall
+ * @author finnt
  *
  */
 @Component
@@ -26,8 +26,8 @@ import edu.ncsu.csc.CoffeeMaker.repositories.OrderQueueRepository;
 public class OrderQueueService extends Service<CoffeemakerOrderQueue, Long> {
 
     /**
-     * InventoryRepository, to be autowired in by Spring and provide CRUD
-     * operations on Inventory model.
+     * OrderRepository, to be autowired in by Spring and provide CRUD operations
+     * on Inventory model.
      */
     @Autowired
     private OrderQueueRepository orderQueueRepository;
@@ -38,10 +38,10 @@ public class OrderQueueService extends Service<CoffeemakerOrderQueue, Long> {
     }
 
     /**
-     * Retrieves the singleton Inventory instance from the database, creating it
-     * if it does not exist.
+     * Retrieves the singleton Order instance from the database, creating it if
+     * it does not exist.
      *
-     * @return the Inventory, either new or fetched
+     * @return the Order, either new or fetched
      */
     public synchronized CoffeemakerOrderQueue getOrderQueue () {
         final List<CoffeemakerOrderQueue> queueList = findAll();

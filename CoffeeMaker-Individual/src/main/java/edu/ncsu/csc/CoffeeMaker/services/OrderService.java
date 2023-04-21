@@ -12,10 +12,9 @@ import edu.ncsu.csc.CoffeeMaker.repositories.OrderRepository;
 
 /**
  *
- * The IngredientService is used to handle CRUD operations on the Ingredient
- * model.
+ * The OrderService is used to handle CRUD operations on the Order model.
  *
- * @author Shiva Ganapathy
+ * @author finnt
  *
  *
  *
@@ -24,16 +23,16 @@ import edu.ncsu.csc.CoffeeMaker.repositories.OrderRepository;
 @Transactional
 public class OrderService extends Service<CoffeemakerOrder, Long> {
     /**
-     * IngredientService, to be autowired in by Spring and provide CRUD
-     * operations on Inventory model.
+     * OrderService, to be autowired in by Spring and provide CRUD operations on
+     * Order model.
      */
     @Autowired
     private OrderRepository orderRepository;
 
     /**
-     * Returns the ingredient repository
+     * Returns the order repository
      *
-     * @return Returns the ingredient repository
+     * @return Returns the order repository
      */
     @Override
     protected JpaRepository<CoffeemakerOrder, Long> getRepository () {
@@ -41,22 +40,22 @@ public class OrderService extends Service<CoffeemakerOrder, Long> {
     }
 
     /**
-     * Find a Ingredient with the provided name
+     * Find a Order with the provided name
      *
      * @param name
-     *            Name of the Ingredient to find
-     * @return found Ingredient, null if none
+     *            Name of the Order to find
+     * @return found Order, null if none
      */
     public CoffeemakerOrder findByName ( final String name ) {
         return orderRepository.findByName( name );
     }
 
     /**
-     * Find a Ingredient with the provided name
+     * Find a Order with the provided name
      *
-     * @param name
-     *            Name of the Ingredient to find
-     * @return found Ingredient, null if none
+     * @param id
+     *            Id of the Order to find
+     * @return found Order, null if none
      */
     @Override
     public CoffeemakerOrder findById ( final Long id ) {
