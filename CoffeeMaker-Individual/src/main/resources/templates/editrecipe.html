@@ -67,6 +67,7 @@
 						return; 
 					}
 				}
+				
 				$scope.selectedIngredient.amount = 1
 				$scope.selectedRecipe.ingredients.push($scope.selectedIngredient); 
 			}
@@ -81,7 +82,8 @@
 					}
 				}
 
-				$scope.selectedRecipe.ingredients = newArray; 
+				$scope.selectedRecipe.ingredients = newArray;
+				
 				console.log($scope.selectedRecipe)
 			}
 	        

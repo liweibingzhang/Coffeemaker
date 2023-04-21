@@ -455,7 +455,7 @@ public class MappingController {
             final CoffeemakerUser user = service.findByName( username );
             if ( user != null && user.getUserType() == CoffeemakerUserType.Customer
                     && user.compareSessionId( sessionid ) ) {
-                return "viewOrder";
+                return "vieworder";
             }
 
             if ( user != null && user.getUserType() == CoffeemakerUserType.Staff
