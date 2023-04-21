@@ -16,7 +16,16 @@
 		var app = angular.module('myApp', []);
 		app.controller('fulfill', function($scope, $http, $window) {
 			$scope.orders = [];
+			$scope.invalid = true;
 			
+			$scope.validCheck = function(status) {
+				if (status == "Ordered") {
+					$scope.invalid = false;
+				}
+				else {
+					$scope.invalid = true;
+				}
+			}
 			
 			$scope.getOrders = () => {
 				$http.get('/api/v1/order').then(function(response) {
@@ -24,6 +33,15 @@
 					$scope.selectedOrder = $scope.orders[0]; 
 					for(let i = 0; i < $scope.orders.length; i += 1) {
 						$scope.orders[i].title = `${$scope.orders[i].username}\'s order  @ ${new Date($scope.orders[i].creationTime)}`
+							if($scope.orders[i].fullfilled && $scope.orders[i].pickedUp != true){
+								$scope.orders[i].status = "Fulfilled"; 
+	                        }
+	                        else if($scope.orders[i].pickedUp && $scope.orders[i].fullfilled){
+	                        	$scope.orders[i].status = "Picked up";  
+	                       	}
+	                        else {
+	                        	$scope.orders[i].status = "Ordered"; 
+	                        } 
 					}
 	        	});
 					
@@ -40,10 +58,18 @@
 				}
 				
 				console.log(body)
-				$http.post("/api/v1/order/fulfill", body)
-					.then((response) => {
-						console.log(response)
-						$scope.getOrders(); 
+				$http.post("/api/v1/order/fulfill", body).then(
+						function(success) {
+							console.log(response.status)
+							$scope.getOrders(); 
+							$scope.invalid = true;
+					}, function(rejection) {
+							if(rejection.status == 412) {
+								alert("Not enough ingredients");
+							}
+							else {
+								alert("Error fulfilling recipe");
+							}
 				}); 	
 			}
 		});
@@ -55,11 +81,11 @@
 		<div class="row">
 			<div class="col-sm">
 				<h3>Select an Orders</h3>
-				<select ng-model="selectedOrder" ng-options="item as item.title for item in orders" required="true">
+				<select ng-model="selectedOrder" ng-change="validCheck(selectedOrder.status)" ng-options="item as item.title for item in orders" required="true">
 					<option value="">Select Order to Fulfill</option>
 				</select>
 				<h3>Current Order of {{selectedOrder.username}}</h3>
-				
+				<h4>Status: {{selectedOrder.status}}</h4>
 				<table border="1">
 					<tr>
 						<th>Name of the Recipes</th>
@@ -71,7 +97,8 @@
 					</tr>
 				</table>
 				<h2>
-				<button ng-click="onSubmit()">Submit</button>
+				<button ng-disabled="invalid" ng-click="onSubmit()">Submit</button>
+				
 				    <a href="staff.html">
 						<button>Home</button>
 					</a>

@@ -368,6 +368,35 @@ public class MappingController {
     }
 
     /**
+     * On a GET request to staff, the StaffController will return
+     * /src/main/resources/templates/staff.html.
+     *
+     * @param model
+     *            underlying UI model
+     * @param username
+     *            Username
+     * @param sessionid
+     *            Session ID for user
+     * @param type
+     *            User type
+     * @return contents of the page
+     */
+    @GetMapping ( { "/fulfill", "/fulfill.html" } )
+    public String fulfill ( final Model model,
+            @CookieValue ( name = "username", required = false ) final String username,
+            @CookieValue ( name = "sessionid", required = false ) final String sessionid,
+            @CookieValue ( name = "type", required = false ) final String type ) {
+        if ( sessionid != null && type != null && username != null ) {
+            final CoffeemakerUser user = service.findByName( username );
+            if ( user != null && user.compareSessionId( sessionid )
+                    && user.getUserType() == CoffeemakerUserType.Staff ) {
+                return "fulfill";
+            }
+        }
+        return "login";
+    }
+
+    /**
      * On a GET request to staff, the CustomerController will return
      * /src/main/resources/templates/customer.html.
      *
@@ -426,7 +455,7 @@ public class MappingController {
             final CoffeemakerUser user = service.findByName( username );
             if ( user != null && user.getUserType() == CoffeemakerUserType.Customer
                     && user.compareSessionId( sessionid ) ) {
-                return "viewOrder";
+                return "vieworder";
             }
 
             if ( user != null && user.getUserType() == CoffeemakerUserType.Staff

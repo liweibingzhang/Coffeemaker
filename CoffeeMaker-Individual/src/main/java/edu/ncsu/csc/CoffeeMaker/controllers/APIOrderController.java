@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import edu.ncsu.csc.CoffeeMaker.models.CoffeemakerOrder;
 import edu.ncsu.csc.CoffeeMaker.models.CoffeemakerUser;
 import edu.ncsu.csc.CoffeeMaker.models.Ingredient;
+import edu.ncsu.csc.CoffeeMaker.models.Inventory;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.models.enums.CoffeemakerUserType;
 import edu.ncsu.csc.CoffeeMaker.models.enums.Permissions;
@@ -139,7 +140,8 @@ public class APIOrderController extends APIController {
                 final Recipe tempRecipe = recipeService.findByName( recipeName );
                 for ( final Ingredient ingredient : tempRecipe.getIngredients() ) {
                     try {
-                        totalRequirement.addIngredient( ingredient );
+                        final Ingredient newIng = new Ingredient( ingredient.getName(), ingredient.getAmount() );
+                        totalRequirement.addIngredient( newIng );
                     }
                     catch ( final Exception e ) {
                         totalRequirement.setIngredientAmount( ingredient.getName(),
@@ -153,11 +155,14 @@ public class APIOrderController extends APIController {
             return new ResponseEntity( errorResponse( "Not enough ingredients" ), HttpStatus.PRECONDITION_FAILED );
         }
         order.fullfil();
+        final Inventory inv = inventoryService.getInventory();
+        orderService.save( order );
         for ( final String recipeName : order.getRecipes().keySet() ) {
             for ( int i = 0; i < order.getRecipes().get( recipeName ); i++ ) {
-                inventoryService.getInventory().useIngredients( recipeService.findByName( recipeName ) );
+                inv.useIngredients( recipeService.findByName( recipeName ) );
             }
         }
+        inventoryService.save( inv );
         return new ResponseEntity( HttpStatus.OK );
     }
 
@@ -179,7 +184,11 @@ public class APIOrderController extends APIController {
         if ( !order.getUsername().equals( user.getName() ) ) {
             return new ResponseEntity( errorResponse( "Invalid permissions" ), HttpStatus.UNAUTHORIZED );
         }
-        order.pickup();
+
+        if ( order != null ) {
+            order.pickup();
+            orderService.save( order );
+        }
 
         return new ResponseEntity( HttpStatus.OK );
     }

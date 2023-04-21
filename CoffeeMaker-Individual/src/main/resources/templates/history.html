@@ -37,23 +37,21 @@
 		        			}
 							
 		        			currOrder.total = total; 
-		        			if(currOrder.fulfilled){
-		        				currOrder.status = "Fulfilled"; 
-		        			}
-		        			
-		        			else if(currOrder.pickedup){
-		        				currOrder.status = "Picked up";  
-		        			}
-		        			
-		        			else {
-		        				currOrder.status = "Ordered"; 
-		        			}
+		        			if(currOrder.fullfilled && currOrder.pickedUp != true){
+								currOrder.status = "Fulfilled"; 
+	                        }
+	                        else if(currOrder.pickedUp && currOrder.fullfilled){
+	                        	currOrder.status = "Picked up";  
+	                       	}
+	                        else {
+	                        	currOrder.status = "Ordered"; 
+	                        } 
 		        			
 		        			currOrder.newDate = new Date(currOrder.creationTime).toLocaleString('en-US', { timeZone: 'UTC' }); 
 		        			$scope.overallTotal += currOrder.total; 
 		        		}
 		        		
-		        		console.log(overallTotal);  
+		        		//console.log(overallTotal);  
 		        	});	
 				})
 			}

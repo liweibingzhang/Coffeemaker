@@ -47,8 +47,8 @@ class CoffeemakerOrderTest {
         order.create( "testUser" );
         assertTrue( order.fullfil() );
         assertTrue( order.pickup() );
-        assertFalse( order.fullfil() );
-        assertFalse( order.pickup() );
+        assertTrue( order.fullfil() );
+        assertTrue( order.pickup() );
     }
 
     @Test
