@@ -59,11 +59,14 @@
 				
 				console.log(body)
 				$http.post('/api/v1/order/fulfill', body).then((response) => {
+					console.log(response); 
+					
 					$scope.orders = [];
 					// reset the orders to get the new updated list of orders 
 					$scope.getOrders(); 
+					alert("Order has been fulfilled!")
 					
-				})
+				}).catch(() => alert("Cannot Fulfill Order due to a lack of ingredients!"))
 			}
 		});
 		/*]]>*/
