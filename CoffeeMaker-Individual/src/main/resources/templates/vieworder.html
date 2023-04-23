@@ -4,8 +4,23 @@
 <title>Welcome to the CSC326 CoffeeMaker</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+<link rel="stylesheet" href="css/bootstrap.css" />
+<link rel="stylesheet" href="css/app.css" /> 
 </head>
 <body>
+	<style>
+	th, td {
+		text-align : center;
+		width : 20%; 
+		height : 10%; 
+	}
+	
+	#title { 
+		padding-right : 50px; 
+	}
+	
+	
+</style> 
 	<script>
 		/*<![CDATA[*/
 		var app = angular.module('myApp', []);
@@ -67,7 +82,7 @@
 		/*]]>*/
 	</script>
 	
-	<div ng-app="myApp" ng-controller="vieworder">
+	<div class="generic-container ng-cloak" ng-app="myApp" ng-controller="vieworder">
 		<h1>Current Orders</h1>
 		<select ng-model="selectedOrder" ng-change="validCheck(selectedOrder.status)" ng-options="item as item.title for item in orders" required="true">
 					<option value="">Select Order to Fulfill</option>
@@ -85,9 +100,9 @@
 			</tr>
 		</table>
 		<h2>
-			<button ng-disabled="invalid" ng-click="onSubmit()">Pickup</button>
+			<button class="btn btn-primary" ng-disabled="invalid" ng-click="onSubmit()">Pickup</button>
 			    <a href="customer.html">
-					<button>Home</button>
+					<button class="btn btn-primary">Home</button>
 				</a>
 		 </h2>
 	</div>
