@@ -3,14 +3,25 @@
 <head>
 <title>Welcome to the CSC326 CoffeeMaker</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" href="css/bootstrap.css" />
+<link rel="stylesheet" href="css/app.css" />
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+
+<style>
+	th, td {
+		text-align : center;
+		width : 20%; 
+		height : 10%; 
+	}
+	
+	#title { 
+		padding-right : 50px; 
+	}
+	
+	
+</style>
 </head>
 <body>
-	<style>
-		 th, td {
-		  border-color: white;
-		}
-	</style>
 	<script>
 		/*<![CDATA[*/
 		var app = angular.module('myApp', []);
@@ -39,6 +50,7 @@
 	                        else if($scope.orders[i].pickedUp && $scope.orders[i].fullfilled){
 	                        	$scope.orders[i].status = "Picked up";  
 	                       	}
+						
 	                        else {
 	                        	$scope.orders[i].status = "Ordered"; 
 	                        } 
@@ -72,11 +84,11 @@
 		/*]]>*/
 	</script>
 	
-	<div ng-app="myApp" ng-controller="fulfill">
+	<div  class="generic-container ng-cloak" style="margin-left : 20px;" ng-app="myApp" ng-controller="fulfill">
 		<h1>View/Fulfill Orders</h1>
 		<div class="row">
 			<div class="col-sm">
-				<h3>Select an Orders</h3>
+				<h3> Select an Orders </h3>
 				<select ng-model="selectedOrder" ng-change="validCheck(selectedOrder.status)" ng-options="item as item.title for item in orders" required="true">
 					<option value="">Select Order to Fulfill</option>
 				</select>
@@ -93,10 +105,10 @@
 					</tr>
 				</table>
 				<h2>
-				<button ng-disabled="invalid" ng-click="onSubmit()">Submit</button>
+				<button class="btn btn-primary" ng-disabled="invalid" ng-click="onSubmit()">Submit</button>
 				
 				    <a href="staff.html">
-						<button>Home</button>
+						<button class="btn btn-primary">Home</button>
 					</a>
 			  </h2>
 			</div>

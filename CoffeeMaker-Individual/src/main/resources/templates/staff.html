@@ -4,6 +4,8 @@
 <title>Welcome to the CSC326 CoffeeMaker</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+<link rel="stylesheet" href="css/bootstrap.css" />
+<link rel="stylesheet" href="css/app.css" /> 
 </head>
 <body>
 	<script>
@@ -18,9 +20,9 @@
 		/*]]>*/
 	</script>
 	
-	<div ng-app="myApp" ng-controller="staff">
+	<div class="generic-container ng-cloak"  ng-app="myApp" ng-controller="staff">
 		<h1>Coffee Maker</h1>
-		<h2>Available Options</h2>
+		<h3>Available Options</h3>
 		<ul>
 			<li><a href="recipe.html">Create Recipe</a></li>
 			<li><a href="editrecipe.html">Edit Recipe</a></li>
@@ -29,7 +31,7 @@
 			<li><a href="inventory.html">Update Ingredient</a></li>
 			<li><a href="fulfill.html">Fulfill order</a></li>
 			<li><a href="history">History of order</a></li>
-			<button type="button" ng-click="logout()">Log out</button>
+			<button style="margin-top: 20px;"  class="btn btn-primary" type="button" ng-click="logout()">Log out</button>
 		</ul>
 	</div>
 	 

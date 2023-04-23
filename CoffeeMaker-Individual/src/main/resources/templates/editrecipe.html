@@ -113,7 +113,7 @@
 			/*]]>*/
 		</script>
 
-	<div ng-app="myApp" ng-controller="editRecipe">
+	<div class="generic-container ng-cloak" ng-app="myApp" ng-controller="editRecipe">
 		<form ng-submit="submit()" name="editRecipeForm"> 
 			<div class="col-sm">
 				<h3> Select Recipe to Update</h3> 
@@ -153,16 +153,16 @@
 			</div>
 	
 			<br/>
-			<button style="margin-top: 20px;"  ng-click="onSubmit()">Update Recipe</button>
+			<button class="btn btn-primary" style="margin-bottom: 20px;"  ng-click="onSubmit()">Update Recipe</button>
 		</form>
+	    <a href="staff.html">
+			<button class="btn btn-primary">Home</button>
+		</a>
+	  </h2>
 	</div>
 
 <!-- Redirect to the home page -->
   <h2>
-    <a href="staff.html">
-		<button>Home</button>
-	</a>
-  </h2>
 </body>
 </html>
 

@@ -4,6 +4,8 @@
 <title>Welcome to CoffeeMaker</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script> 
+<link rel="stylesheet" href="css/bootstrap.css" />
+<link rel="stylesheet" href="css/app.css" /> 
 </head>
 <body>
 	<script>
@@ -19,14 +21,14 @@
 	</script>
 	
 	
-	<div ng-app="myApp" ng-controller="customer">
+	<div  class="generic-container ng-cloak" ng-app="myApp" ng-controller="customer">
 		<h1>Coffee Maker</h1>
 		<h2>Available Options</h2>
 		<ul>
 			<li><a href="sendorder.html">Send a Order</a></li>
 			<li><a href="vieworder.html">View/Pick up Order</a></li>
 			<br></br>
-			<button type="button" ng-click="logout()">Log out</button> 
+			<button class="btn btn-primary"  type="button" ng-click="logout()">Log out</button> 
 		</ul>
 	</div> 
 </body>
