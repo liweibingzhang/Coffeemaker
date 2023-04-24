@@ -27,7 +27,6 @@
 		var app = angular.module('myApp', []);
 		app.controller('fulfill', function($scope, $http, $window) {
 			$scope.orders = [];
-			$scope.invalid = true;
 			
 			$scope.validCheck = function(status) {
 				if (status == "Ordered") {
@@ -55,6 +54,7 @@
 	                        	$scope.orders[i].status = "Ordered"; 
 	                        } 
 					}
+					$scope.validCheck($scope.orders[0].status);
 	        	});
 					
 			}
