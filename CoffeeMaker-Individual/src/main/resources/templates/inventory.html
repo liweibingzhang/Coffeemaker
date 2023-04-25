@@ -99,7 +99,7 @@ input.ng-dirty.ng-invalid-min {
 				<span class="lead">View Inventory</span>
 			</div>
 
-			<div ng-repeat="ingredient in inventoryOriginal.ingredients track by $index"> 
+			<div style="margin-left: 20px;padding-top:10px;padding-bottom:10px" ng-repeat="ingredient in inventoryOriginal.ingredients track by $index"> 
 				{{ingredient.name}} :<span id="currentCoffee" ng-bind="inventoryOriginal.ingredients[$index].amount"></span><br />
 
 			</div>
